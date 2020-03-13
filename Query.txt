@@ -1,0 +1,20 @@
+DECLARE @Object AS INT;
+DECLARE @ResponseText AS VARCHAR(8000);
+DECLARE @Body AS VARCHAR(MAX) = 
+
+(SELECT 2 AS monthperiod, 3 AS yearperiod,
+reportname, reportval, reportgroup
+FROM FN_PROFITLOSS('2010-1-1',GETDATE())
+FOR JSON PATH)
+
+
+EXEC sp_OACreate 'MSXML2.XMLHTTP', @Object OUT;
+EXEC sp_OAMethod @Object, 'open', NULL, 'post','http://localhost:8000/profitloss', 'false'
+
+EXEC sp_OAMethod @Object, 'setRequestHeader', null, 'Content-Type', 'application/json'
+EXEC sp_OAMethod @Object, 'send', null, @body
+
+EXEC sp_OAMethod @Object, 'responseText', @ResponseText OUTPUT
+SELECT @ResponseText
+
+EXEC sp_OADestroy @Object

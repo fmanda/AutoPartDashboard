@@ -139,8 +139,9 @@
 		}
 
 		public static function saveObjToDB($obj, $db){
-			$sql = static::generateSQL($obj);
+			// $sql = static::generateSQL($obj);
 			try {
+				$sql = static::generateSQL($obj);
 				$int = $db->prepare($sql)->execute();
 				if (static::isNewTransaction($obj)){
 					$obj->id = $db->lastInsertId();

@@ -4,7 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 require '../vendor/autoload.php';
 require_once '../src/classes/DB.php';
-
+require_once '../src/models/ModelProfitLoss.php';
 
 $app->get('/profitloss', function ($request, $response) {
   $response->getBody()->write("Hello Sales !");
@@ -27,9 +27,26 @@ $app->get('/profitloss/{monthperiod}/{yearperiod}', function ($request, $respons
 
 		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
 	}catch(Exception $e){
-		$msg = $e->getMessage();
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
 		return $response->withStatus(500)
-			->withHeader('Content-Type', 'text/html')
-			->write($msg);
+			->withHeader('Content-Type', 'text/html');
 	}
+});
+
+$app->post('/profitloss', function ($request, $response) {
+	$json = $request->getBody();
+	$obj = json_decode($json);
+	try{
+		ModelProfitLoss::saveBatch($obj);
+    $json = json_encode($obj);
+    $response->getBody()->write($json);
+    return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+		$msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+
 });
