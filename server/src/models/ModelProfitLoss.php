@@ -4,7 +4,7 @@
 	class ModelProfitLoss extends BaseModel{
 		public static function getFields(){
 			return array(
-				"monthperiod", "yearperiod", "reportname", "reportval", "reportgroup"
+				"projectcode", "monthperiod", "yearperiod", "reportname", "reportval", "reportgroup", "groupname", "reportidx"
 			);
 		}
 
@@ -22,8 +22,12 @@
 			}
 		}
 
-		public static function deleteFromDB($id){
-			$str = static::generateSQLDelete("id=". $id);
+		public static function deletePeriod($projectcode, $monthperiod, $yearperiod){
+			$str = static::generateSQLDelete(
+				"projectcode='". $projectcode .
+				"' and monthperiod = ". $monthperiod.
+				" and yearperiod = ". $yearperiod
+			);
 			DB::executeSQL($str);
 		}
 
@@ -34,7 +38,7 @@
 			try {
         foreach ($objs as $obj) {
           static::saveObjToDB($obj, $db);
-  			}     
+  			}
 				$db->commit();
 				$db = null;
 			} catch (Exception $e) {

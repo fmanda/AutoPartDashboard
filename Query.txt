@@ -1,20 +1,64 @@
-DECLARE @Object AS INT;
-DECLARE @ResponseText AS VARCHAR(8000);
+
+DECLARE @MONTHPERIOD INT = 1
+DECLARE @YEARPERIOD INT = 2020
+
+DECLARE @BASEURL VARCHAR(100) = 'http://localhost:8000/'
+DECLARE @PROJECTCODE VARCHAR(100) = (SELECT DISTINCT VARVALUE FROM TVARIABLE WHERE VARNAME = 'KODE_CABANG')
+DECLARE @STARTDATE DATE = DATEFROMPARTS (@YEARPERIOD, @MONTHPERIOD, 1);
+DECLARE @ENDDATE DATE = EOMONTH(@STARTDATE);
+DECLARE @URL VARCHAR(300);
+
+DECLARE @status int
+DECLARE @req AS INT;
+DECLARE @ResponseText as table(responseText nvarchar(max))
+declare @msg varchar(max) 
+
+
 DECLARE @Body AS VARCHAR(MAX) = 
+	(
+		SELECT @PROJECTCODE as projectcode, @MONTHPERIOD AS monthperiod, @YEARPERIOD AS yearperiod,
+		reportname, reportval, reportgroup, GROUPNAME, reportidx
+		FROM FN_PROFITLOSS_mobile(@STARTDATE ,@ENDDATE)
+		FOR JSON PATH
+	)
 
-(SELECT 2 AS monthperiod, 3 AS yearperiod,
-reportname, reportval, reportgroup
-FROM FN_PROFITLOSS('2010-1-1',GETDATE())
-FOR JSON PATH)
+
+EXEC sp_OACreate 'MSXML2.XMLHTTP', @req OUT;
+
+-- delete first
+SET @URL = @BASEURL + 'profitloss/' + @PROJECTCODE + '/' 
+			+ CAST(@MONTHPERIOD AS varchar(10)) + '/'
+			+ CAST(@YEARPERIOD AS varchar(10));
+EXEC sp_OAMethod @req, 'open', NULL, 'DELETE', @URL, 'false'
+EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'text/html'
+EXEC sp_OAMethod @req, 'send';
+EXEC sp_OAGetProperty @req, 'status', @status OUT
+if (@status <> 200) 
+begin
+	INSERT INTO @ResponseText (ResponseText) EXEC sp_OAGetProperty @req, 'responseText'
+	set @msg  = @URL + ' => Error Code ' +  cast(@status as varchar(10))
+		+ CHAR(10)+ (select distinct isnull(responsetext,'') from @ResponseText);
+	THROW 51000, @msg, 1;  
+end
+
+-- post after
+SET @URL = @BASEURL + 'profitloss'; 
+EXEC sp_OAMethod @req, 'open', NULL, 'post', @URL, 'false'
+EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'application/json'
+EXEC sp_OAMethod @req, 'send', null, @body
+EXEC sp_OAGetProperty @req, 'status', @status OUT
+
+if (@status <> 200) 
+begin
+	INSERT INTO @ResponseText (ResponseText) EXEC sp_OAGetProperty @req, 'responseText'
+	set @msg  = @URL + ' => Error Code ' +  cast(@status as varchar(10))
+		 + CHAR(10) + (select distinct isnull(responsetext,'') from @ResponseText);
+	THROW 51000, @msg, 1;  
+end
+
+INSERT INTO @ResponseText VALUES(@URL + ' <OK>');
+INSERT INTO trestlog(responsetext) select responsetext from @ResponseText;
+
+EXEC sp_OADestroy @req
 
 
-EXEC sp_OACreate 'MSXML2.XMLHTTP', @Object OUT;
-EXEC sp_OAMethod @Object, 'open', NULL, 'post','http://localhost:8000/profitloss', 'false'
-
-EXEC sp_OAMethod @Object, 'setRequestHeader', null, 'Content-Type', 'application/json'
-EXEC sp_OAMethod @Object, 'send', null, @body
-
-EXEC sp_OAMethod @Object, 'responseText', @ResponseText OUTPUT
-SELECT @ResponseText
-
-EXEC sp_OADestroy @Object

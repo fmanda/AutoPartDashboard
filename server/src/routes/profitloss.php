@@ -50,3 +50,18 @@ $app->post('/profitloss', function ($request, $response) {
 	}
 
 });
+
+$app->delete('/profitloss/{projectcode}/{monthperiod}/{yearperiod}', function (Request $request, Response $response) {
+	$projectcode = $request->getAttribute('projectcode');
+  $monthperiod = $request->getAttribute('monthperiod');
+  $yearperiod = $request->getAttribute('yearperiod');
+	try{
+		ModelProfitLoss::deletePeriod($projectcode,$monthperiod,$yearperiod);
+    return $response;
+	}catch(Exception $e){
+		$msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
