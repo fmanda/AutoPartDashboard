@@ -40,4 +40,13 @@
         android:name="com.fmanda.autopartdashboard.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_profitLoss"
+        android:name="com.fmanda.autopartdashboard.ui.profitloss.ProfitLossFragment"
+        android:label="profit_loss_fragment"
+        tools:layout="@layout/fragment_profitloss" />
+    <fragment
+        android:id="@+id/nav_project"
+        android:name="com.fmanda.autopartdashboard.ui.project.ProjectFragment"
+        android:label="ProjectFragment" />
 </navigation>

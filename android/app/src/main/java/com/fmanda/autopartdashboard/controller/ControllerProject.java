@@ -39,5 +39,24 @@ public class ControllerProject {
         return new ModelProject();
     }
 
+    public List<ModelProject> getProjects(){
+        try {
+            List<ModelProject> projects = new ArrayList<ModelProject>();
+
+            DBHelper db = DBHelper.getInstance(context);
+            SQLiteDatabase rdb = db.getReadableDatabase();
+            Cursor cursor = rdb.rawQuery("select * from project", null);
+            while (cursor.moveToNext()) {
+                ModelProject project = new ModelProject();
+                project.loadFromCursor(cursor);
+                projects.add(project);
+            }
+            return projects;
+        }catch(Exception e){
+            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
 }
 
