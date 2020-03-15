@@ -20,7 +20,7 @@ BEGIN
 	DECLARE @Body AS VARCHAR(MAX) = 
 		(
 			SELECT @PROJECTCODE as projectcode, @MONTHPERIOD AS monthperiod, @YEARPERIOD AS yearperiod,
-			reportname, reportval, reportgroup, GROUPNAME, reportidx
+			reportname, reportval, reportgroup, groupname, reportidx
 			FROM FN_PROFITLOSS_mobile(@STARTDATE ,@ENDDATE)
 			FOR JSON PATH
 		)

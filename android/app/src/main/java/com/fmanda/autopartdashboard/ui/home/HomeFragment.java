@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +15,10 @@ import androidx.lifecycle.ViewModelProvider;
 //import androidx.lifecycle.ViewModelProviders;
 
 import com.fmanda.autopartdashboard.R;
+import com.fmanda.autopartdashboard.controller.ControllerProject;
+import com.fmanda.autopartdashboard.controller.ControllerRest;
 import com.fmanda.autopartdashboard.controller.ControllerSetting;
+import com.fmanda.autopartdashboard.model.ModelProject;
 import com.fmanda.autopartdashboard.model.ModelSetting;
 
 public class HomeFragment extends Fragment {
@@ -40,9 +44,34 @@ public class HomeFragment extends Fragment {
 
     private void testMethod() {
         ControllerSetting cs = new ControllerSetting(this.getContext());
-        ModelSetting ms = cs.getSetting("company_name");
+        ControllerRest cr = new ControllerRest(this.getContext());
+        cr.setListener(new ControllerRest.Listener() {
+            @Override
+            public void onSuccess(String msg) {
+//                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+//                homeViewModel.setText(msg);
 
-        homeViewModel.setText("Setting : " + ms.getVarvalue());
+                ModelProject modelProject = new ControllerProject(getContext()).getProject("1");
+                homeViewModel.setText(msg);
+            }
+
+            @Override
+            public void onError(String msg) {
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        cr.setAsyncTaskListenerListener(new ControllerRest.AsyncTaskListener() {
+            @Override
+            public void onProgressUpdate(String msg) {
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+        cr.SyncData(Boolean.TRUE);
+
+//        cs.updateSetting("company_name", "pt febrian manda");
+//        ModelSetting ms = cs.getSetting("company_name");
+//        homeViewModel.setText("Setting : " + ms.getVarvalue());
 
 
     }

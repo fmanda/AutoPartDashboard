@@ -27,5 +27,6 @@ $app->get('/', function (Request $request, Response $response, $args) {
 });
 
 require '../src/routes/profitloss.php';
+require '../src/routes/project.php';
 
 $app->run();

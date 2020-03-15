@@ -3,7 +3,9 @@ package com.fmanda.autopartdashboard;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Toast;
 
+import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        temporaryResetDB();
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -59,5 +62,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void temporaryResetDB(){
+        DBHelper dbHelper = DBHelper.getInstance(this);
+        dbHelper.resetDatabase(dbHelper.getWritableDatabase());
+        Toast.makeText(this, "Database Reset done", Toast.LENGTH_SHORT).show();
+
     }
 }
