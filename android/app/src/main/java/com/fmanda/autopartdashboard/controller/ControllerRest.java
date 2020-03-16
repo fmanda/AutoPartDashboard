@@ -10,10 +10,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.RequestFuture;
 import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.fmanda.autopartdashboard.helper.GsonRequest;
+import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
 import com.fmanda.autopartdashboard.model.ModelSetting;
 
 import java.util.List;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -45,6 +47,7 @@ public class ControllerRest {
     public interface Listener {
         void onSuccess(String msg);
         void onError(String msg);
+        void onProgress(String msg);
     }
 
     private AsyncTaskListener asyncTaskListener;
@@ -80,15 +83,20 @@ public class ControllerRest {
         return base_url() + "project";
     }
 
+    public String url_profitloss(){
+        return base_url() + "profitloss";
+    }
+
     private void log(String s) {
         asyncTaskListener.onProgressUpdate(s);
     }
 
     private void SaveProject(ModelProject[] projects){
-        db.getWritableDatabase().execSQL(new ModelProject().generateSQLDelete("")); //always delete all record projects
         try {
+            db.getWritableDatabase().execSQL(new ModelProject().generateSQLDelete("")); //always delete all record projects
             for (ModelProject project : projects) {
 //                project.setIDFromUID(db.getReadableDatabase(), project.getUid());
+                project.setId(0);
                 project.saveToDB(db.getWritableDatabase());
                 if (project.getId() == 0) {
                     log("[project] " + project.getProjectname() + " inserted");
@@ -132,17 +140,81 @@ public class ControllerRest {
         }
     }
 
-    public void SyncData(final Boolean async){
-        AsyncRestRunner runner = new AsyncRestRunner(this);
+    private void SaveProfitLoss(ModelProfitLoss[] profits, int monthperiod, int yearperiod){
+        try {
+            db.getWritableDatabase().execSQL(new ModelProfitLoss().generateSQLDelete
+                    ("where monthperiod = " + String.valueOf(monthperiod)
+                    + " and yearperiod = " + String.valueOf(yearperiod))); //always delete all record projects
+
+            for (ModelProfitLoss profit : profits) {
+                profit.setId(0);
+                profit.saveToDB(db.getWritableDatabase());
+                if (profit.getId() == 0) {
+                    log("projectcode : " + profit.getProjectcode() + " " + profit.getReportname() + " inserted");
+                }
+            }
+        }catch(Exception e){
+            log(e.toString());
+        }
+    }
+
+
+    public void DownloadProfitLoss(Boolean async, final int monthperiod, final int yearperiod){
+        String url = url_profitloss() + "/" + String.valueOf(yearperiod) + "/" + String.valueOf(monthperiod);
+        if (async) {
+            GsonRequest<ModelProfitLoss[]> gsonReq = new GsonRequest<>(url, ModelProfitLoss[].class,
+                    new Response.Listener<ModelProfitLoss[]>() {
+                        @Override
+                        public void onResponse(ModelProfitLoss[] response) {
+                            SaveProfitLoss(response, monthperiod, yearperiod);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            log(error.toString());
+                        }
+                    }
+            );
+            this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+        }else {
+            RequestFuture<ModelProfitLoss[]> future = RequestFuture.newFuture();
+            GsonRequest<ModelProfitLoss[]> gsonReq = new GsonRequest<>(url, ModelProfitLoss[].class, future, future);
+            this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+
+            try {
+                ModelProfitLoss[] response = future.get(10, TimeUnit.SECONDS);
+                SaveProfitLoss(response, monthperiod, yearperiod);
+            } catch (InterruptedException|ExecutionException| TimeoutException e) {
+                log(e.getMessage());
+            }
+        }
+    }
+
+    public void SyncData( final Boolean async){
+        AsyncRestRunner runner = new AsyncRestRunner(this, 1, 2020);
         runner.execute(async);
+    }
+
+    public void SyncProfitLoss(int monthperiod, int yearperiod){
+        AsyncRestRunner runner = new AsyncRestRunner(this, monthperiod, yearperiod);
+        runner.syncProject = Boolean.TRUE;
+        runner.syncProfitLoss = Boolean.TRUE;
+        runner.execute(Boolean.FALSE);
     }
 }
 
-
+//next ganti ke java.util.concurrent
 class AsyncRestRunner extends AsyncTask<Boolean, String, Void> {
     private ControllerRest controllerRest;
+    public Boolean syncProject = Boolean.TRUE;
+    public Boolean syncProfitLoss = Boolean.TRUE;
+    private int monthperiod;
+    private int yearperiod;
 
-    AsyncRestRunner(ControllerRest controllerRest) {
+    AsyncRestRunner(ControllerRest controllerRest, int monthperiod, int yearperiod) {
+        this.monthperiod = monthperiod;
+        this.yearperiod = yearperiod;
         this.controllerRest = controllerRest;
         this.controllerRest.setAsyncTaskListenerListener(new ControllerRest.AsyncTaskListener() {
             @Override
@@ -159,7 +231,7 @@ class AsyncRestRunner extends AsyncTask<Boolean, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        controllerRest.listener.onSuccess(values[0]);
+        controllerRest.listener.onProgress(values[0]);
     }
 
     @Override
@@ -169,8 +241,15 @@ class AsyncRestRunner extends AsyncTask<Boolean, String, Void> {
 //        publishProgress("Upload Detail Order");
 //        controllerRest.UploadDetailOrder(async);
 
-//        publishProgress("Download Project");
-        controllerRest.DownloadProject(async);
+        if (syncProject) {
+            publishProgress("Download Project");
+            controllerRest.DownloadProject(async);
+        }
+
+        if (syncProfitLoss) {
+            publishProgress("Download Project");
+            controllerRest.DownloadProfitLoss(async, this.monthperiod, this.yearperiod);
+        }
 //        controllerRest.DownloadMaterial(async);
 //        controllerRest.DownloadProduct(async);
 //        controllerRest.DownloadCustomer(async);

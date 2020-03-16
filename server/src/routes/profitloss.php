@@ -12,7 +12,7 @@ $app->get('/profitloss', function ($request, $response) {
 });
 
 
-$app->get('/profitloss/{monthperiod}/{yearperiod}', function ($request, $response, $args) {
+$app->get('/profitloss/{yearperiod}/{monthperiod}', function ($request, $response, $args) {
 	try{
     $monthperiod = 0;
 		$yearperiod = 0;

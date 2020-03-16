@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        testMethod();
+//        testMethod();
 
         return root;
     }
@@ -48,9 +48,6 @@ public class HomeFragment extends Fragment {
         cr.setListener(new ControllerRest.Listener() {
             @Override
             public void onSuccess(String msg) {
-//                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-//                homeViewModel.setText(msg);
-
                 ModelProject modelProject = new ControllerProject(getContext()).getProject("1");
                 homeViewModel.setText(msg);
             }
@@ -58,6 +55,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onError(String msg) {
                 Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onProgress(String msg) {
+
             }
         });
 

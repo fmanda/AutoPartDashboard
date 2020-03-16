@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
 import com.fmanda.autopartdashboard.model.ModelSetting;
 
@@ -42,6 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(new ModelSetting().generateMetaData());
         db.execSQL(new ModelProject().generateMetaData());
+        db.execSQL(new ModelProfitLoss().generateMetaData());
         ModelSetting.initMetaData(db);
     }
 
@@ -54,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void dropAllTables(SQLiteDatabase db){
         db.execSQL(new ModelSetting().generateDropMetaData());
         db.execSQL(new ModelProject().generateDropMetaData());
+        db.execSQL(new ModelProfitLoss().generateDropMetaData());
     }
 
     public void resetDatabase(SQLiteDatabase db){
