@@ -46,14 +46,14 @@ public class ControllerRest {
 
     public interface Listener {
         void onSuccess(String msg);
-        void onError(String msg);
+        void onError(String msg); //beware using this on asynctask, u will get exception
         void onProgress(String msg);
     }
 
     private AsyncTaskListener asyncTaskListener;
 
     public interface AsyncTaskListener {
-        void onProgressUpdate(String msg);
+        void onProgressUpdate(String...msg);
     }
 
 
@@ -87,7 +87,7 @@ public class ControllerRest {
         return base_url() + "profitloss";
     }
 
-    private void log(String s) {
+    private void log(String...s) {
         asyncTaskListener.onProgressUpdate(s);
     }
 
@@ -109,7 +109,7 @@ public class ControllerRest {
         }
     }
 
-    public void DownloadProject(Boolean async){
+    public boolean DownloadProject(Boolean async){
         if (async) {
             GsonRequest<ModelProject[]> gsonReq = new GsonRequest<>(url_project(), ModelProject[].class,
                     new Response.Listener<ModelProject[]>() {
@@ -126,6 +126,7 @@ public class ControllerRest {
                     }
             );
             this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+            return true;
         }else {
             RequestFuture<ModelProject[]> future = RequestFuture.newFuture();
             GsonRequest<ModelProject[]> gsonReq = new GsonRequest<>(url_project(), ModelProject[].class, future, future);
@@ -135,8 +136,10 @@ public class ControllerRest {
                 ModelProject[] response = future.get(10, TimeUnit.SECONDS);
                 SaveProject(response);
             } catch (InterruptedException|ExecutionException| TimeoutException e) {
-                log(e.getMessage());
+                log(e.getMessage(),"error");
+                return false;
             }
+            return true;
         }
     }
 
@@ -159,7 +162,7 @@ public class ControllerRest {
     }
 
 
-    public void DownloadProfitLoss(Boolean async, final int monthperiod, final int yearperiod){
+    public boolean DownloadProfitLoss(Boolean async, final int monthperiod, final int yearperiod){
         String url = url_profitloss() + "/" + String.valueOf(yearperiod) + "/" + String.valueOf(monthperiod);
         if (async) {
             GsonRequest<ModelProfitLoss[]> gsonReq = new GsonRequest<>(url, ModelProfitLoss[].class,
@@ -177,6 +180,7 @@ public class ControllerRest {
                     }
             );
             this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+            return true;
         }else {
             RequestFuture<ModelProfitLoss[]> future = RequestFuture.newFuture();
             GsonRequest<ModelProfitLoss[]> gsonReq = new GsonRequest<>(url, ModelProfitLoss[].class, future, future);
@@ -186,8 +190,10 @@ public class ControllerRest {
                 ModelProfitLoss[] response = future.get(10, TimeUnit.SECONDS);
                 SaveProfitLoss(response, monthperiod, yearperiod);
             } catch (InterruptedException|ExecutionException| TimeoutException e) {
-                log(e.getMessage());
+                log(e.getMessage(),"error");
+                return false;
             }
+            return true;
         }
     }
 
@@ -218,7 +224,7 @@ class AsyncRestRunner extends AsyncTask<Boolean, String, Void> {
         this.controllerRest = controllerRest;
         this.controllerRest.setAsyncTaskListenerListener(new ControllerRest.AsyncTaskListener() {
             @Override
-            public void onProgressUpdate(String msg) {
+            public void onProgressUpdate(String...msg) {
                 publishProgress(msg);
             }
         });
@@ -231,30 +237,30 @@ class AsyncRestRunner extends AsyncTask<Boolean, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        controllerRest.listener.onProgress(values[0]);
+        if (values.length>1) {
+            if (values[1] == "error") {
+                controllerRest.listener.onError(values[0]);
+            }
+        }else{
+            controllerRest.listener.onProgress(values[0]);
+        }
     }
 
     @Override
     protected Void doInBackground(Boolean... booleans) {
         boolean async = booleans[0];
         publishProgress("Connecting to Rest API : " + controllerRest.base_url());
-//        publishProgress("Upload Detail Order");
-//        controllerRest.UploadDetailOrder(async);
-
+        boolean result;
         if (syncProject) {
             publishProgress("Download Project");
-            controllerRest.DownloadProject(async);
+            if (!controllerRest.DownloadProject(async)) return null;
         }
 
         if (syncProfitLoss) {
-            publishProgress("Download Project");
-            controllerRest.DownloadProfitLoss(async, this.monthperiod, this.yearperiod);
+            publishProgress("Download Profit Loss");
+            if (!controllerRest.DownloadProfitLoss(async, this.monthperiod, this.yearperiod)) return null;
         }
-//        controllerRest.DownloadMaterial(async);
-//        controllerRest.DownloadProduct(async);
-//        controllerRest.DownloadCustomer(async);
-//        publishProgress("Download Order");
-//        controllerRest.DownloadOrder(async);
+
         return null;
     }
 }

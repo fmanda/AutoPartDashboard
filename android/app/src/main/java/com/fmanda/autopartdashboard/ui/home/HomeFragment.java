@@ -63,13 +63,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        cr.setAsyncTaskListenerListener(new ControllerRest.AsyncTaskListener() {
-            @Override
-            public void onProgressUpdate(String msg) {
-                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-            }
-        });
-        cr.SyncData(Boolean.TRUE);
 
 //        cs.updateSetting("company_name", "pt febrian manda");
 //        ModelSetting ms = cs.getSetting("company_name");

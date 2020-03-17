@@ -10,4 +10,5 @@ import java.util.List;
 public class ProfitLossViewModel extends ViewModel {
     // TODO: Implement the ViewModel
     public List<ModelProfitLoss> profits = new ArrayList<ModelProfitLoss>();
+    public List<ModelProfitLoss> groups = new ArrayList<ModelProfitLoss>();
 }

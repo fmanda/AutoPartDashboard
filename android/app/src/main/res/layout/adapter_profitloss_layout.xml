@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:fontFamily="@font/roboto"
         android:text="@string/default_text"
         android:textStyle="normal" />
 
@@ -20,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:fontFamily="@font/roboto"
         android:gravity="end"
         android:text="@string/default_text" />
 </LinearLayout>

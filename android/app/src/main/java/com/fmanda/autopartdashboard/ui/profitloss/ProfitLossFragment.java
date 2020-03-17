@@ -40,23 +40,21 @@ public class ProfitLossFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_profitloss, container, false);
         rvProfit = root.findViewById(R.id.rvProfit);
 
+        profitLossAdapter = new ProfitLossAdapter(getContext(), mViewModel.groups, mViewModel.profits);
+        rvProfit.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        rvProfit.setAdapter(profitLossAdapter);
         loadFromRest();
 
         return root;
     }
 
     private void loadProfits(){
-//        List<ModelProfitLoss> profits = new ControllerProfitLoss(getContext()).getProfitLoss("1",1, 2020);
-//        for (ModelProfitLoss profitloss : profits){
-//            Toast.makeText(getContext(), profitloss.getReportname(), Toast.LENGTH_SHORT).show();
-//        }
         ControllerProfitLoss controllerProfitLoss = new ControllerProfitLoss(getContext());
         mViewModel.profits.clear();
         mViewModel.profits.addAll(controllerProfitLoss.getProfitLoss("",1,2020));
-        profitLossAdapter = new ProfitLossAdapter(getContext(), ModelProfitLoss.getGroups(mViewModel.profits), mViewModel.profits);
-        rvProfit.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        rvProfit.setAdapter(profitLossAdapter);
-//        profitLossAdapter.notifyDataSetChanged();
+        mViewModel.groups.clear();
+        mViewModel.groups.addAll(ModelProfitLoss.getGroups(mViewModel.profits));
+        profitLossAdapter.notifyDataSetChanged();
     }
 
     private void loadFromRest(){
@@ -64,21 +62,19 @@ public class ProfitLossFragment extends Fragment {
         cr.setListener(new ControllerRest.Listener() {
             @Override
             public void onSuccess(String msg) {
-//                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                 loadProfits();
             }
 
             @Override
             public void onError(String msg) {
-//                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-            }
+                Toast.makeText(getContext(), "Gagal koneksi ke REST Server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();            }
 
             @Override
             public void onProgress(String msg) {
-//                msg = "Progess " + msg;
-//                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
             }
         });
+
 
         cr.SyncProfitLoss(1, 2020);
     }
