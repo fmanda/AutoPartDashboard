@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +40,7 @@ public class ProfitLossFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(ProfitLossViewModel.class);
         View root = inflater.inflate(R.layout.fragment_profitloss, container, false);
         rvProfit = root.findViewById(R.id.rvProfit);
+        rvProfit.addItemDecoration(new DividerItemDecoration(rvProfit.getContext(), DividerItemDecoration.VERTICAL));
 
         profitLossAdapter = new ProfitLossAdapter(getContext(), mViewModel.groups, mViewModel.profits);
         rvProfit.setLayoutManager(new GridLayoutManager(getContext(), 1));

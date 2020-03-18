@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -101,6 +102,8 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
             txtSumValue = itemView.findViewById(R.id.txtSumValue);
             txtSumName = itemView.findViewById(R.id.txtSumName);
             rvDetail = itemView.findViewById(R.id.rvDetail);
+
+            rvDetail.addItemDecoration(new DividerItemDecoration(rvDetail.getContext(), DividerItemDecoration.VERTICAL));
             lnSummary = itemView.findViewById(R.id.lnSummary);
         }
         //

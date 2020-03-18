@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
+<!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="vertical"-->
+<!--    app:cardBackgroundColor="#FFFFFF"-->
+<!--    app:cardCornerRadius="2dp"-->
+<!--    app:cardElevation="3dp"-->
+<!--    app:cardPreventCornerOverlap="true"-->
+<!--    app:cardUseCompatPadding="true"-->
+<!--    app:contentPadding="5dp">-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="15sp">
+    android:paddingBottom="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/txtName"
@@ -19,7 +31,7 @@
             android:fontFamily="@font/roboto"
             android:text="@string/default_text"
             android:textColor="@color/colorBold"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
@@ -30,7 +42,7 @@
             android:gravity="right"
             android:text="@string/default_text"
             android:textColor="@color/colorBold"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -38,16 +50,18 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvDetail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:paddingStart="20sp" />
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
 
     <LinearLayout
         android:id="@+id/lnSummary"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:paddingStart="10sp">
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/txtSumName"
@@ -56,7 +70,7 @@
             android:fontFamily="@font/roboto"
             android:text="@string/default_text"
             android:textColor="@color/colorBold"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
@@ -67,9 +81,10 @@
             android:gravity="right"
             android:text="@string/default_text"
             android:textColor="@color/colorBold"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
 </LinearLayout>
+
+<!--</androidx.cardview.widget.CardView>-->
