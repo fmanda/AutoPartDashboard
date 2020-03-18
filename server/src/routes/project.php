@@ -7,7 +7,7 @@ require_once '../src/classes/DB.php';
 
 $app->get('/project', function ($request, $response, $args) {
 	try{
-		$sql = "select * from project";
+		$sql = "select * from project order by projectcode";
     $data = DB::openQuery($sql);
     $json = json_encode($data);
     $response->getBody()->write($json);

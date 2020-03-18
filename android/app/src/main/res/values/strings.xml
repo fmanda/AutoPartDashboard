@@ -18,7 +18,7 @@
     <string name="menu_setting">Setting</string>
     <string name="caption_simpan">Simpan</string>
 
-    <string-array name="monts_array">
+    <string-array name="months_array">
         <item>Januari</item>
         <item>Februari</item>
         <item>Maret</item>
@@ -41,11 +41,11 @@
         <item>2023</item>
         <item>2024</item>
         <item>2025</item>
-<!--        <item>2026</item>-->
-<!--        <item>2027</item>-->
-<!--        <item>2028</item>-->
-<!--        <item>2029</item>-->
-<!--        <item>2030</item>-->
+        <item>2026</item>
+        <item>2027</item>
+        <item>2028</item>
+        <item>2029</item>
+        <item>2030</item>
     </string-array>
 
 </resources>

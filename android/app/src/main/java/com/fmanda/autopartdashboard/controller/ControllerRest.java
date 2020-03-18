@@ -208,13 +208,19 @@ public class ControllerRest {
         runner.syncProfitLoss = Boolean.TRUE;
         runner.execute(Boolean.FALSE);
     }
+
+    public void SyncProjects(int monthperiod, int yearperiod){
+        AsyncRestRunner runner = new AsyncRestRunner(this, monthperiod, yearperiod);
+        runner.syncProject = Boolean.FALSE;
+        runner.execute(Boolean.FALSE);
+    }
 }
 
 //next ganti ke java.util.concurrent
 class AsyncRestRunner extends AsyncTask<Boolean, String, Void> {
     private ControllerRest controllerRest;
-    public Boolean syncProject = Boolean.TRUE;
-    public Boolean syncProfitLoss = Boolean.TRUE;
+    public Boolean syncProject = Boolean.FALSE;
+    public Boolean syncProfitLoss = Boolean.FALSE;
     private int monthperiod;
     private int yearperiod;
 
