@@ -17,4 +17,35 @@
     <string name="default_text">text</string>
     <string name="menu_setting">Setting</string>
     <string name="caption_simpan">Simpan</string>
+
+    <string-array name="months_array">
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <string-array name="years_array">
+        <item>2019</item>
+        <item>2020</item>
+        <item>2021</item>
+        <item>2022</item>
+        <item>2023</item>
+        <item>2024</item>
+        <item>2025</item>
+        <item>2026</item>
+        <item>2027</item>
+        <item>2028</item>
+        <item>2029</item>
+        <item>2030</item>
+    </string-array>
+
 </resources>

@@ -30,8 +30,10 @@ public class ControllerProfitLoss {
             DBHelper db = DBHelper.getInstance(context);
             SQLiteDatabase rdb = db.getReadableDatabase();
             String sql = "select * from profitloss";
-//            sql += "where monthperiod = " + String.valueOf(monthperiod) + "and yearperiod = " + String.valueOf(yearperiod);
-//            if (projectcode != "") sql += " and projectcode = '" + projectcode + "'";
+            sql += " where monthperiod = " + String.valueOf(monthperiod) + " and yearperiod = " + String.valueOf(yearperiod);
+            if (projectcode != "" && projectcode != "0") {
+                sql += " and projectcode = '" + projectcode + "'";
+            }
 
             Cursor cursor = rdb.rawQuery(sql, null);
             while (cursor.moveToNext()) {

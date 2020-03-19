@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -30,6 +32,7 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
     private List<ModelProfitLoss> groups;
     private LayoutInflater mInflater;
     private ItemClickListener itemClickListener;
+    public boolean isExpand = false;
 
     public ProfitLossAdapter(Context context, List<ModelProfitLoss> groups, List<ModelProfitLoss> profits) {
         this.context = context;
@@ -50,27 +53,40 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
         viewHolder.ModelProfitLoss = groups.get(i);
         viewHolder.txtNama.setText(viewHolder.ModelProfitLoss.getGroupname());
         viewHolder.txtVal.setText(CurrencyHelper.format(viewHolder.ModelProfitLoss.getReportval()));
-        viewHolder.txtSumValue.setText(CurrencyHelper.format(viewHolder.ModelProfitLoss.getReportval()));
+//        viewHolder.txtSumValue.setText(CurrencyHelper.format(viewHolder.ModelProfitLoss.getReportval()));
         viewHolder.txtSumName.setText("Total " + viewHolder.txtNama.getText());
 
 
-        if (viewHolder.ModelProfitLoss.getReportval() < 0){
-            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorWarning));
-            viewHolder.txtSumValue.setTextColor(context.getColor(R.color.colorWarning));
-        }else {
-            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorMoney));
-            viewHolder.txtSumValue.setTextColor(context.getColor(R.color.colorMoney));
+//        if (viewHolder.ModelProfitLoss.getReportval() < 0){
+//            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorWarning));
+//        }else {
+//            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorMoney));
+//        }
+
+
+//        viewHolder.rvDetail.setVisibility(View.GONE);
+//        viewHolder.txtVal.setVisibility(View.GONE);
+//        viewHolder.lnSummary.setVisibility(View.GONE);
+
+
+//        else{
+//            viewHolder.rvDetail.setVisibility(View.VISIBLE);
+//            viewHolder.txtSumName.setVisibility(View.GONE);
+//        }
+//        viewHolder.txtSumName.setVisibility(View.GONE);
+        if (isExpand){
+            viewHolder.rvDetail.setVisibility(View.VISIBLE);
+            viewHolder.txtSumName.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.rvDetail.setVisibility(View.GONE);
+            viewHolder.txtSumName.setVisibility(View.GONE);
         }
 
+        //override here
         Integer[] groupOnly = {200,250,400,450,500};
         if (Arrays.asList(groupOnly).contains(viewHolder.ModelProfitLoss.getReportgroup() )) {
             viewHolder.rvDetail.setVisibility(View.GONE);
-            viewHolder.txtVal.setVisibility(View.VISIBLE);
-            viewHolder.lnSummary.setVisibility(View.GONE);
-        }else{
-            viewHolder.rvDetail.setVisibility(View.VISIBLE);
-            viewHolder.txtVal.setVisibility(View.GONE);
-            viewHolder.lnSummary.setVisibility(View.VISIBLE);
+            viewHolder.txtSumName.setVisibility(View.GONE);
         }
 
         ProfitLossDetail ProfitLossDetail = new ProfitLossDetail(context,
@@ -91,7 +107,8 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
         public TextView txtNama;
         public TextView txtVal;
         public TextView txtSumName;
-        public TextView txtSumValue;
+        public Button btnExpand;
+//        public TextView txtSumValue;
         public RecyclerView rvDetail;
         public LinearLayout lnSummary;
 
@@ -99,12 +116,14 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
             super(itemView);
             txtNama = itemView.findViewById(R.id.txtName);
             txtVal = itemView.findViewById(R.id.txtVal);
-            txtSumValue = itemView.findViewById(R.id.txtSumValue);
+//            txtSumValue = itemView.findViewById(R.id.txtSumValue);
             txtSumName = itemView.findViewById(R.id.txtSumName);
             rvDetail = itemView.findViewById(R.id.rvDetail);
 
-            rvDetail.addItemDecoration(new DividerItemDecoration(rvDetail.getContext(), DividerItemDecoration.VERTICAL));
+//            rvDetail.addItemDecoration(new DividerItemDecoration(rvDetail.getContext(), DividerItemDecoration.VERTICAL));
             lnSummary = itemView.findViewById(R.id.lnSummary);
+
+
         }
         //
         @Override
@@ -151,10 +170,10 @@ class ProfitLossDetail extends RecyclerView.Adapter<ProfitLossDetail.ViewHolder>
         viewHolder.ModelProfitLoss = profits.get(i);
         viewHolder.txtVal.setText(CurrencyHelper.format(viewHolder.ModelProfitLoss.getReportval()));
         viewHolder.txtName.setText(viewHolder.ModelProfitLoss.getReportname());
-        if (viewHolder.ModelProfitLoss.getReportval() < 0){
-            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorWarning));
-        }else
-            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorMoney));
+//        if (viewHolder.ModelProfitLoss.getReportval() < 0){
+//            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorWarning));
+//        }else
+//            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorMoney));
     }
 
     @Override
