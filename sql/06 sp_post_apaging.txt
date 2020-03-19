@@ -1,16 +1,9 @@
-create PROCEDURE SP_POST_PROFITLOSS(
-	@MONTHPERIOD INT,
-	@YEARPERIOD INT
-)
+CREATE PROCEDURE SP_POST_APAGING
 AS 
 BEGIN
 	DECLARE @BASEURL VARCHAR(100) = (SELECT DISTINCT VARVALUE FROM TVARIABLE WHERE VARNAME = 'REST_URL')	
-
 	DECLARE @PROJECTCODE VARCHAR(100) = (SELECT DISTINCT VARVALUE FROM TVARIABLE WHERE VARNAME = 'KODE_CABANG')
-	DECLARE @STARTDATE DATE = DATEFROMPARTS (@YEARPERIOD, @MONTHPERIOD, 1);
-	DECLARE @ENDDATE DATE = EOMONTH(@STARTDATE);
 	DECLARE @URL VARCHAR(300);
-
 	DECLARE @status int
 	DECLARE @req AS INT;
 	DECLARE @ResponseText as table(responseText nvarchar(max))
@@ -19,9 +12,13 @@ BEGIN
 
 	DECLARE @Body AS VARCHAR(MAX) = 
 		(
-			SELECT @PROJECTCODE as projectcode, @MONTHPERIOD AS monthperiod, @YEARPERIOD AS yearperiod,
-			reportname, reportval, reportgroup, groupname, reportidx
-			FROM FN_PROFITLOSS_mobile(@STARTDATE ,@ENDDATE)
+			SELECT @PROJECTCODE as projectcode, sum([current]) as [current], 
+			sum(range1) as range1, 
+			sum(range2) as range2, 
+			sum(range3) as range3,
+			sum(range4) as range4,
+			sum(remain) as total
+			FROM FN_AP_AGING(getdate())
 			FOR JSON PATH
 		)
 
@@ -29,9 +26,7 @@ BEGIN
 	EXEC sp_OACreate 'MSXML2.XMLHTTP', @req OUT;
 
 	-- delete first
-	SET @URL = @BASEURL + 'profitloss/' + @PROJECTCODE + '/' 
-				+ CAST(@YEARPERIOD AS varchar(10)) + '/'
-				+ CAST(@MONTHPERIOD AS varchar(10));
+	SET @URL = @BASEURL + 'apaging/' + @PROJECTCODE;
 	EXEC sp_OAMethod @req, 'open', NULL, 'DELETE', @URL, 'false'
 	EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'text/html'
 	EXEC sp_OAMethod @req, 'send';
@@ -45,7 +40,7 @@ BEGIN
 	end
 
 	-- post after
-	SET @URL = @BASEURL + 'profitloss'; 
+	SET @URL = @BASEURL + 'apaging'; 
 	EXEC sp_OAMethod @req, 'open', NULL, 'post', @URL, 'false'
 	EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'application/json'
 	EXEC sp_OAMethod @req, 'send', null, @body

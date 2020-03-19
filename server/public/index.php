@@ -29,5 +29,7 @@ $app->get('/', function (Request $request, Response $response, $args) {
 require '../src/routes/profitloss.php';
 require '../src/routes/project.php';
 require '../src/routes/salesperiod.php';
+require '../src/routes/cashflow.php';
+require '../src/routes/apaging.php';
 
 $app->run();

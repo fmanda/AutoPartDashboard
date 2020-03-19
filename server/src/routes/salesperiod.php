@@ -54,10 +54,10 @@ $app->post('/salesperiod', function ($request, $response) {
 
 $app->delete('/salesperiod/{projectcode}/{startdate}/{enddate}', function (Request $request, Response $response) {
 	$projectcode = $request->getAttribute('projectcode');
-  $monthperiod = $request->getAttribute('monthperiod');
-  $yearperiod = $request->getAttribute('yearperiod');
+  $startdate = $request->getAttribute('startdate');
+  $enddate = $request->getAttribute('enddate');
 	try{
-		ModelSalesPeriod::deletePeriod($projectcode,$monthperiod,$yearperiod);
+		ModelSalesPeriod::deletePeriod($projectcode,$startdate,$enddate);
     return $response;
 	}catch(Exception $e){
 		$msg = $e->getMessage();

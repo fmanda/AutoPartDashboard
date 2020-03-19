@@ -4,23 +4,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 require '../vendor/autoload.php';
 require_once '../src/classes/DB.php';
-require_once '../src/models/ModelProfitLoss.php';
-
-$app->get('/profitloss', function ($request, $response) {
-  $response->getBody()->write("Hello Sales !");
-  return $response;
-});
+require_once '../src/models/ModelAPAging.php';
 
 
-$app->get('/profitloss/{yearperiod}/{monthperiod}', function ($request, $response, $args) {
+$app->get('/apaging', function ($request, $response, $args) {
 	try{
-    $monthperiod = 0;
-		$yearperiod = 0;
-		if (isset($args['monthperiod'])) $monthperiod = $args['monthperiod'];
-		if (isset($args['yearperiod'])) $yearperiod = $args['yearperiod'];
-		$sql = "select * from profitloss where monthperiod = ".$monthperiod." and yearperiod = " . $yearperiod ;
-
-
+		$sql = "select * from apaging";
     $data = DB::openQuery($sql);
     $json = json_encode($data);
     $response->getBody()->write($json);
@@ -34,11 +23,11 @@ $app->get('/profitloss/{yearperiod}/{monthperiod}', function ($request, $respons
 	}
 });
 
-$app->post('/profitloss', function ($request, $response) {
+$app->post('/apaging', function ($request, $response) {
 	$json = $request->getBody();
 	$obj = json_decode($json);
 	try{
-		ModelProfitLoss::saveBatch($obj);
+		ModelAPAging::saveBatch($obj);
     $json = json_encode($obj);
     $response->getBody()->write($json);
     return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
@@ -51,12 +40,10 @@ $app->post('/profitloss', function ($request, $response) {
 
 });
 
-$app->delete('/profitloss/{projectcode}/{yearperiod}/{monthperiod}', function (Request $request, Response $response) {
+$app->delete('/apaging/{projectcode}', function (Request $request, Response $response) {
 	$projectcode = $request->getAttribute('projectcode');
-  $monthperiod = $request->getAttribute('monthperiod');
-  $yearperiod = $request->getAttribute('yearperiod');
 	try{
-		ModelProfitLoss::deletePeriod($projectcode,$yearperiod,$monthperiod);
+		ModelAPAging::deletePeriod($projectcode);
     return $response;
 	}catch(Exception $e){
 		$msg = $e->getMessage();

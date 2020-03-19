@@ -17,6 +17,7 @@
 			DB::executeSQL($str);
 		}
 
+
     public static function saveBatch($objs){
 			$db = new DB();
 			$db = $db->connect();

@@ -1,10 +1,10 @@
 <?php
 	require_once '../src/models/BaseModel.php';
 
-	class ModelProfitLoss extends BaseModel{
+	class ModelAPAging extends BaseModel{
 		public static function getFields(){
 			return array(
-				"projectcode", "monthperiod", "yearperiod", "reportname", "reportval", "reportgroup", "groupname", "reportidx"
+				"projectcode", "current", "range1", "range2", "range3", "range4", "total"
 			);
 		}
 
@@ -22,14 +22,13 @@
 			}
 		}
 
-		public static function deletePeriod($projectcode, $yearperiod, $monthperiod){
+		public static function deletePeriod($projectcode){
 			$str = static::generateSQLDelete(
-				"projectcode='". $projectcode .
-				"' and monthperiod = ". $monthperiod.
-				" and yearperiod = ". $yearperiod
+				"projectcode='". $projectcode . "'"
 			);
 			DB::executeSQL($str);
 		}
+
 
     public static function saveBatch($objs){
 			$db = new DB();

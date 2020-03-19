@@ -1,4 +1,4 @@
-create PROCEDURE SP_POST_PROFITLOSS(
+CREATE PROCEDURE SP_POST_CASHFLOW(
 	@MONTHPERIOD INT,
 	@YEARPERIOD INT
 )
@@ -18,10 +18,20 @@ BEGIN
 
 
 	DECLARE @Body AS VARCHAR(MAX) = 
-		(
-			SELECT @PROJECTCODE as projectcode, @MONTHPERIOD AS monthperiod, @YEARPERIOD AS yearperiod,
-			reportname, reportval, reportgroup, groupname, reportidx
-			FROM FN_PROFITLOSS_mobile(@STARTDATE ,@ENDDATE)
+		(			
+			select @PROJECTCODE as projectcode, @MONTHPERIOD as monthperiod, @YEARPERIOD as yearperiod,
+			sum(purchase) as purchase, sum(sales) as sales, sum(otherincome) as otherincome, sum(otherexpense) as otherexpense
+			from (
+				SELECT 
+				CASE WHEN (HEADER_FLAG = 100) then sum(creditamt)  else 0 end as purchase,
+				CASE WHEN (HEADER_FLAG = 200) then sum(debetamt) else 0 end as sales,
+				CASE WHEN (HEADER_FLAG = 400) then sum(debetamt) else 0 end as otherincome,
+				CASE WHEN (HEADER_FLAG = 500) then sum(creditamt) else 0 end as otherexpense
+				FROM TFINANCIALTRANSACTION
+				WHERE TRANSDATE BETWEEN @STARTDATE AND @ENDDATE
+				AND REKENING_ID IS NOT NULL
+				GROUP BY HEADER_FLAG
+			) as r
 			FOR JSON PATH
 		)
 
@@ -29,7 +39,7 @@ BEGIN
 	EXEC sp_OACreate 'MSXML2.XMLHTTP', @req OUT;
 
 	-- delete first
-	SET @URL = @BASEURL + 'profitloss/' + @PROJECTCODE + '/' 
+	SET @URL = @BASEURL + 'cashflow/' + @PROJECTCODE + '/' 
 				+ CAST(@YEARPERIOD AS varchar(10)) + '/'
 				+ CAST(@MONTHPERIOD AS varchar(10));
 	EXEC sp_OAMethod @req, 'open', NULL, 'DELETE', @URL, 'false'
@@ -45,7 +55,7 @@ BEGIN
 	end
 
 	-- post after
-	SET @URL = @BASEURL + 'profitloss'; 
+	SET @URL = @BASEURL + 'cashflow'; 
 	EXEC sp_OAMethod @req, 'open', NULL, 'post', @URL, 'false'
 	EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'application/json'
 	EXEC sp_OAMethod @req, 'send', null, @body
