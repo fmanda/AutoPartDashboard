@@ -131,7 +131,7 @@ public class SalesPeriodFragment extends Fragment {
         c.set(Calendar.HOUR_OF_DAY, 0);
 
         final Date dtEnd = c.getTime();
-        c.add(Calendar.DAY_OF_YEAR, -14);
+        c.add(Calendar.DAY_OF_YEAR, -30);
         final Date dtStart = c.getTime();
 
         ControllerRest cr = new ControllerRest(this.getContext());

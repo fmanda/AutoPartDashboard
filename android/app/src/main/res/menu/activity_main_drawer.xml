@@ -6,20 +6,37 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_cloud_sync"
+            android:icon="@drawable/ic_menu_home"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_profitLoss"
-            android:icon="@drawable/ic_menu_checkall"
-            android:title="@string/menu_profitloss" />
-        <item
             android:id="@+id/nav_sales"
-            android:icon="@drawable/ic_menu_rice"
+            android:icon="@drawable/ic_menu_sales"
             android:title="@string/menu_sales" />
 
         <item
+            android:id="@+id/nav_profitLoss"
+            android:icon="@drawable/ic_menu_profitloss"
+            android:title="@string/menu_profitloss" />
+        <item
+            android:id="@+id/nav_cashflow"
+            android:icon="@drawable/ic_menu_cashflow"
+            android:title="@string/menu_cashflow" />
+        <item
+            android:id="@+id/nav_apaging"
+            android:icon="@drawable/ic_menu_apaging"
+            android:title="@string/menu_apaging" />
+<!--        <item-->
+<!--            android:id="@+id/nav_araging"-->
+<!--            android:icon="@drawable/ic_menu_rice"-->
+<!--            android:title="@string/menu_araging" />-->
+        <item
+            android:id="@+id/nav_agingstock"
+            android:icon="@drawable/ic_menu_stock"
+            android:title="@string/menu_agingstock" />
+
+        <item
             android:id="@+id/nav_setting"
-            android:icon="@drawable/ic_menu_database"
+            android:icon="@drawable/ic_menu_setting"
             android:title="@string/menu_setting" />
     </group>
 </menu>

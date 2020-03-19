@@ -10,11 +10,13 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_profitloss">ProfitLoss</string>
+    <string name="menu_profitloss">Laba Rugi</string>
     <string name="menu_project">Project</string>
-    <string name="menu_sales">Sales</string>
-    <string name="menu_apaging">Hutang / AP</string>
+    <string name="menu_sales">Penjualan</string>
+    <string name="menu_apaging">Saldo Hutang</string>
     <string name="menu_cashflow">Cash Flow</string>
+    <string name="menu_araging">Saldo Piutang</string>
+    <string name="menu_agingstock">Persediaan</string>
 
     <string name="home_second">Home Second</string>
     <string name="default_text">text</string>
