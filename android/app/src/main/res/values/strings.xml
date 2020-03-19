@@ -2,8 +2,8 @@
     <string name="app_name">My Application</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">AutoPartDashboard</string>
+    <string name="nav_header_subtitle">Mobile Report for Autopart</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -12,6 +12,9 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_profitloss">ProfitLoss</string>
     <string name="menu_project">Project</string>
+    <string name="menu_sales">Sales</string>
+    <string name="menu_apaging">Hutang / AP</string>
+    <string name="menu_cashflow">Cash Flow</string>
 
     <string name="home_second">Home Second</string>
     <string name="default_text">text</string>

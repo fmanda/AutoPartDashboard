@@ -45,4 +45,9 @@
         android:name="com.fmanda.autopartdashboard.ui.setting.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/nav_sales"
+        android:name="com.fmanda.autopartdashboard.ui.salesperiod.SalesPeriodFragment"
+        android:label="Sales Period"
+        tools:layout="@layout/fragment_salesperiod" />
 </navigation>

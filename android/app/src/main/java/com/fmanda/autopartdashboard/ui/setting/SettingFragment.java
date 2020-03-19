@@ -17,9 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fmanda.autopartdashboard.R;
+import com.fmanda.autopartdashboard.controller.ControllerRest;
 import com.fmanda.autopartdashboard.controller.ControllerSetting;
 import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.fmanda.autopartdashboard.model.ModelSetting;
+import com.google.android.material.snackbar.Snackbar;
 
 public class SettingFragment extends Fragment {
 
@@ -55,6 +57,16 @@ public class SettingFragment extends Fragment {
             }
         });
 
+        final Button btnReset = root.findViewById(R.id.btnReset);
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBHelper dbHelper = DBHelper.getInstance(getContext());
+                dbHelper.resetDatabase(dbHelper.getWritableDatabase());
+                Toast.makeText(getContext(), "Database Reset OK", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return root;
     }
 
@@ -66,6 +78,26 @@ public class SettingFragment extends Fragment {
         DBHelper db = DBHelper.getInstance(getContext());
         cs.updateSetting("rest_url",txtURL.getText().toString());
         Toast.makeText(getContext(), "Rest URL Updated", Toast.LENGTH_SHORT).show();
+
+
+        ControllerRest cr = new ControllerRest(getContext());
+        cr.setListener(new ControllerRest.Listener() {
+            @Override
+            public void onSuccess(String msg) {
+                Toast.makeText(getContext(), "List Project Updated", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String msg) {
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onProgress(String msg) {
+
+            }
+        });
+        cr.DownloadProject(Boolean.TRUE);
     }
 
 }

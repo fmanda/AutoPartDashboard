@@ -9,8 +9,10 @@ import java.util.Locale;
 public class CurrencyHelper
 {
     public static final Locale LOCALE = new Locale("id", "ID");
-    private static final DecimalFormat numberFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(LOCALE);
+//    private static final DecimalFormat numberFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(LOCALE);
+    private static final DecimalFormat numberFormat = new DecimalFormat("#,###");
     private static final DecimalFormatSymbols symbols = numberFormat.getDecimalFormatSymbols();
+
 
 
     public static String format(double paramDouble, Boolean withCurrency)

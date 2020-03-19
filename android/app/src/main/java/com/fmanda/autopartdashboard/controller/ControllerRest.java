@@ -1,9 +1,7 @@
 package com.fmanda.autopartdashboard.controller;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -12,10 +10,10 @@ import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.fmanda.autopartdashboard.helper.GsonRequest;
 import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
-import com.fmanda.autopartdashboard.model.ModelSetting;
+import com.fmanda.autopartdashboard.model.ModelSalesPeriod;
 
-import java.util.List;
-import java.util.TreeMap;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -87,8 +85,13 @@ public class ControllerRest {
         return base_url() + "profitloss";
     }
 
+    public String url_salesperiod(){
+        return base_url() + "salesperiod";
+    }
+
     private void log(String...s) {
-        asyncTaskListener.onProgressUpdate(s);
+        if (asyncTaskListener != null)
+            asyncTaskListener.onProgressUpdate(s);
     }
 
     private void SaveProject(ModelProject[] projects){
@@ -116,12 +119,14 @@ public class ControllerRest {
                         @Override
                         public void onResponse(ModelProject[] response) {
                             SaveProject(response);
+                            listener.onSuccess("");
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            log(error.toString());
+//                            log(error.toString());
+                            listener.onError(error.toString());
                         }
                     }
             );
@@ -170,12 +175,14 @@ public class ControllerRest {
                         @Override
                         public void onResponse(ModelProfitLoss[] response) {
                             SaveProfitLoss(response, monthperiod, yearperiod);
+                            listener.onSuccess("");
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            log(error.toString());
+//                            log(error.toString());
+                            listener.onError(error.toString());
                         }
                     }
             );
@@ -197,29 +204,81 @@ public class ControllerRest {
         }
     }
 
+    public boolean DownloadSalesPeriod(final Date startDate, final Date endDate){
+        String dt1 = new SimpleDateFormat("yyyy-MM-dd").format(startDate.getTime());
+        String dt2 = new SimpleDateFormat("yyyy-MM-dd").format(endDate.getTime());
+        String url = url_salesperiod() + "/" + dt1 + "/" + dt2;
+
+        GsonRequest<ModelSalesPeriod[]> gsonReq = new GsonRequest<>(url, ModelSalesPeriod[].class,
+                new Response.Listener<ModelSalesPeriod[]>() {
+                    @Override
+                    public void onResponse(ModelSalesPeriod[] response) {
+                        SaveSalesPeriods(response, startDate, endDate);
+                        listener.onSuccess("");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        log(error.toString());
+                        listener.onError(error.toString());
+                    }
+                }
+        );
+        this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+        return true;
+    }
+
+    private void SaveSalesPeriods(ModelSalesPeriod[] salesPeriods, Date startdate, Date enddate){
+        try {
+            db.getWritableDatabase().execSQL(new ModelSalesPeriod().generateSQLDelete
+                    ("where transdate between '" + String.valueOf(startdate.getTime())
+                            + "' and '" + String.valueOf(enddate.getTime()) + "'")
+                    ); //always delete all record projects
+
+            for (ModelSalesPeriod salesPeriod : salesPeriods) {
+                salesPeriod.setId(0);
+                salesPeriod.saveToDB(db.getWritableDatabase());
+                if (salesPeriod.getId() == 0) {
+                    log("salesPeriod : " + salesPeriod.getTransdate().toString() + " inserted");
+                }
+            }
+        }catch(Exception e){
+            log(e.toString());
+        }
+    }
+
     public void SyncData( final Boolean async){
-        AsyncRestRunner runner = new AsyncRestRunner(this, 1, 2020);
-        runner.execute(async);
+        try {
+            AsyncRestRunner runner = new AsyncRestRunner(this, 1, 2020);
+            runner.execute(async);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void SyncProfitLoss(int monthperiod, int yearperiod){
-        AsyncRestRunner runner = new AsyncRestRunner(this, monthperiod, yearperiod);
-        runner.syncProject = Boolean.TRUE;
-        runner.syncProfitLoss = Boolean.TRUE;
-        runner.execute(Boolean.FALSE);
+        try {
+            AsyncRestRunner runner = new AsyncRestRunner(this, monthperiod, yearperiod);
+//            runner.syncProject = Boolean.TRUE;
+            runner.syncProfitLoss = Boolean.TRUE;
+            runner.execute(Boolean.FALSE);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public void SyncProjects(int monthperiod, int yearperiod){
-        AsyncRestRunner runner = new AsyncRestRunner(this, monthperiod, yearperiod);
-        runner.syncProject = Boolean.FALSE;
-        runner.execute(Boolean.FALSE);
-    }
+//    public void SyncProjects(int monthperiod, int yearperiod){
+//        AsyncRestRunner runner = new AsyncRestRunner(this, monthperiod, yearperiod);
+//        runner.syncProject = Boolean.FALSE;
+//        runner.execute(Boolean.FALSE);
+//    }
 }
 
 //next ganti ke java.util.concurrent
 class AsyncRestRunner extends AsyncTask<Boolean, String, Void> {
     private ControllerRest controllerRest;
-    public Boolean syncProject = Boolean.FALSE;
+//    public Boolean syncProject = Boolean.FALSE;
     public Boolean syncProfitLoss = Boolean.FALSE;
     private int monthperiod;
     private int yearperiod;
@@ -254,19 +313,23 @@ class AsyncRestRunner extends AsyncTask<Boolean, String, Void> {
 
     @Override
     protected Void doInBackground(Boolean... booleans) {
-        boolean async = booleans[0];
-        publishProgress("Connecting to Rest API : " + controllerRest.base_url());
-        boolean result;
-        if (syncProject) {
-            publishProgress("Download Project");
-            if (!controllerRest.DownloadProject(async)) return null;
-        }
+        try{
+            boolean async = booleans[0];
+            publishProgress("Connecting to Rest API : " + controllerRest.base_url());
+            boolean result;
+//            if (syncProject) {
+//                publishProgress("Download Project");
+//                if (!controllerRest.DownloadProject(async)) return null;
+//            }
 
-        if (syncProfitLoss) {
-            publishProgress("Download Profit Loss");
-            if (!controllerRest.DownloadProfitLoss(async, this.monthperiod, this.yearperiod)) return null;
-        }
+            if (syncProfitLoss) {
+                publishProgress("Download Profit Loss");
+                if (!controllerRest.DownloadProfitLoss(async, this.monthperiod, this.yearperiod)) return null;
+            }
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 }

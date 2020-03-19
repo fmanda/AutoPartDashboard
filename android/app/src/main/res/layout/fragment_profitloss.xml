@@ -69,7 +69,8 @@
         android:minHeight="0dp"
         android:text="+Show Detail"
         android:textAllCaps="false"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProfit"

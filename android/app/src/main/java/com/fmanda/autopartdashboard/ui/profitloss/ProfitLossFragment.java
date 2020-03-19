@@ -187,7 +187,7 @@ public class ProfitLossFragment extends Fragment {
         cr.setListener(new ControllerRest.Listener() {
             @Override
             public void onSuccess(String msg) {
-                reInitProject();
+//                reInitProject();
                 loadProfits();
             }
 
@@ -200,8 +200,8 @@ public class ProfitLossFragment extends Fragment {
             public void onProgress(String msg) {
             }
         });
-
-        cr.SyncProfitLoss(spMonth.getSelectedItemPosition()+1, Integer.parseInt(spYear.getSelectedItem().toString()));
+        cr.DownloadProfitLoss(Boolean.TRUE,spMonth.getSelectedItemPosition()+1, Integer.parseInt(spYear.getSelectedItem().toString()));
+//        cr.SyncProfitLoss(spMonth.getSelectedItemPosition()+1, Integer.parseInt(spYear.getSelectedItem().toString()));
     }
 
 

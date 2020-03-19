@@ -32,7 +32,7 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
     private List<ModelProfitLoss> groups;
     private LayoutInflater mInflater;
     private ItemClickListener itemClickListener;
-    public boolean isExpand = false;
+    public boolean isExpand = true;
 
     public ProfitLossAdapter(Context context, List<ModelProfitLoss> groups, List<ModelProfitLoss> profits) {
         this.context = context;
@@ -94,6 +94,11 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
         viewHolder.rvDetail.setLayoutManager(new GridLayoutManager(context, 1));
         viewHolder.rvDetail.setAdapter(ProfitLossDetail);
 
+        if (viewHolder.ModelProfitLoss.getReportval() == 0){
+//            viewHolder.lnGroup.setVisibility(View.GONE);
+            viewHolder.lnGroup.setLayoutParams(viewHolder.hideparams);
+        }
+
     }
 
     @Override
@@ -108,9 +113,11 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
         public TextView txtVal;
         public TextView txtSumName;
         public Button btnExpand;
+        public LinearLayout lnGroup;
 //        public TextView txtSumValue;
         public RecyclerView rvDetail;
         public LinearLayout lnSummary;
+        public LinearLayout.LayoutParams hideparams = new LinearLayout.LayoutParams(0, 0);
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -122,6 +129,7 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
 
 //            rvDetail.addItemDecoration(new DividerItemDecoration(rvDetail.getContext(), DividerItemDecoration.VERTICAL));
             lnSummary = itemView.findViewById(R.id.lnSummary);
+            lnGroup = itemView.findViewById(R.id.lnGroup);
 
 
         }
