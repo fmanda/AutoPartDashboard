@@ -35,11 +35,14 @@ $app->get('/salesperiod/{startdate}/{enddate}', function ($request, $response, $
 	}
 });
 
-$app->post('/salesperiod', function ($request, $response) {
+$app->post('/salesperiod/{projectcode}/{startdate}/{enddate}', function ($request, $response) {
 	$json = $request->getBody();
+	$projectcode = $request->getAttribute('projectcode');
+  $startdate = $request->getAttribute('startdate');
+  $enddate = $request->getAttribute('enddate');
 	$obj = json_decode($json);
 	try{
-		ModelSalesPeriod::saveBatch($obj);
+		ModelSalesPeriod::saveBatch($obj, $projectcode, $startdate, $enddate);
     $json = json_encode($obj);
     $response->getBody()->write($json);
     return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
@@ -52,17 +55,17 @@ $app->post('/salesperiod', function ($request, $response) {
 
 });
 
-$app->delete('/salesperiod/{projectcode}/{startdate}/{enddate}', function (Request $request, Response $response) {
-	$projectcode = $request->getAttribute('projectcode');
-  $startdate = $request->getAttribute('startdate');
-  $enddate = $request->getAttribute('enddate');
-	try{
-		ModelSalesPeriod::deletePeriod($projectcode,$startdate,$enddate);
-    return $response;
-	}catch(Exception $e){
-		$msg = $e->getMessage();
-    $response->getBody()->write($msg);
-		return $response->withStatus(500)
-			->withHeader('Content-Type', 'text/html');
-	}
-});
+// $app->delete('/salesperiod/{projectcode}/{startdate}/{enddate}', function (Request $request, Response $response) {
+// 	$projectcode = $request->getAttribute('projectcode');
+//   $startdate = $request->getAttribute('startdate');
+//   $enddate = $request->getAttribute('enddate');
+// 	try{
+// 		ModelSalesPeriod::deletePeriod($projectcode,$startdate,$enddate);
+//     return $response;
+// 	}catch(Exception $e){
+// 		$msg = $e->getMessage();
+//     $response->getBody()->write($msg);
+// 		return $response->withStatus(500)
+// 			->withHeader('Content-Type', 'text/html');
+// 	}
+// });
