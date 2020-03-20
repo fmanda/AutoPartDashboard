@@ -108,7 +108,7 @@ public class ProfitLossFragment extends Fragment {
         spMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                loadProfits();
+
                 if (spMonthinit) {
                     spMonthinit = false;
                     return;
@@ -139,7 +139,7 @@ public class ProfitLossFragment extends Fragment {
         spYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                loadProfits();
+
                 if (spYearinit) {
                     spYearinit = false;
                     return;
@@ -194,14 +194,14 @@ public class ProfitLossFragment extends Fragment {
             @Override
             public void onError(String msg) {
                 Toast.makeText(getContext(), "Gagal koneksi ke REST Server", Toast.LENGTH_SHORT).show();
-                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();            }
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
 
             @Override
             public void onProgress(String msg) {
             }
         });
         cr.DownloadProfitLoss(Boolean.TRUE,spMonth.getSelectedItemPosition()+1, Integer.parseInt(spYear.getSelectedItem().toString()));
-//        cr.SyncProfitLoss(spMonth.getSelectedItemPosition()+1, Integer.parseInt(spYear.getSelectedItem().toString()));
     }
 
 

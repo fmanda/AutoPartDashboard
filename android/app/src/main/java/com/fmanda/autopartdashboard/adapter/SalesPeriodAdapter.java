@@ -1,6 +1,7 @@
 package com.fmanda.autopartdashboard.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,9 @@ public class SalesPeriodAdapter extends RecyclerView.Adapter<SalesPeriodAdapter.
             if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
                 viewHolder.txtDay.setTextColor(context.getColor(R.color.colorWarning));
                 viewHolder.txtDate.setTextColor(context.getColor(R.color.colorWarning));
+            }else{
+                viewHolder.txtDay.setTextColor(Color.BLACK);
+                viewHolder.txtDate.setTextColor(Color.BLACK);
             }
         }catch(Exception e){
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();

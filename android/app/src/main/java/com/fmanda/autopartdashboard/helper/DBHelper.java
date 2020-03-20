@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.fmanda.autopartdashboard.model.ModelAPAging;
+import com.fmanda.autopartdashboard.model.ModelCashFlow;
 import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
 import com.fmanda.autopartdashboard.model.ModelSalesPeriod;
@@ -46,6 +48,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(new ModelProject().generateMetaData());
         db.execSQL(new ModelProfitLoss().generateMetaData());
         db.execSQL(new ModelSalesPeriod().generateMetaData());
+        db.execSQL(new ModelCashFlow().generateMetaData());
+        db.execSQL(new ModelAPAging().generateMetaData());
         ModelSetting.initMetaData(db);
     }
 
@@ -60,6 +64,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(new ModelProject().generateDropMetaData());
         db.execSQL(new ModelProfitLoss().generateDropMetaData());
         db.execSQL(new ModelSalesPeriod().generateDropMetaData());
+        db.execSQL(new ModelCashFlow().generateDropMetaData());
+        db.execSQL(new ModelAPAging().generateDropMetaData());
     }
 
     public void resetDatabase(SQLiteDatabase db){
