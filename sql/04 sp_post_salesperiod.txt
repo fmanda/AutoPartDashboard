@@ -1,10 +1,9 @@
-CREATE PROCEDURE SP_POST_SALESPERIOD(
+ALTER PROCEDURE [dbo].[SP_POST_SALESPERIOD](
 	@STARTDATE DATE,
 	@ENDDATE DATE
 )
 AS 
 BEGIN
-	--DECLARE @BASEURL VARCHAR(100) = 'http://localhost:8000/'
 	DECLARE @BASEURL VARCHAR(100) = (SELECT DISTINCT VARVALUE FROM TVARIABLE WHERE VARNAME = 'REST_URL')	
 	DECLARE @PROJECTCODE VARCHAR(100) = (SELECT DISTINCT VARVALUE FROM TVARIABLE WHERE VARNAME = 'KODE_CABANG')	
 	DECLARE @URL VARCHAR(300);
@@ -18,7 +17,8 @@ BEGIN
 	DECLARE @Body AS VARCHAR(MAX) = 
 		(
 			
-			SELECT @PROJECTCODE as projectcode, transdate, SUM(netsales) AS netsales, SUM(cogs) AS cogs, sum(netsales-cogs) as grossprofit
+			SELECT @PROJECTCODE as projectcode, transdate, SUM(netsales) AS netsales, SUM(cogs) AS cogs,
+			SUM(netsales)-sum(cogs) as grossprofit
 			FROM (
 				SELECT TRANSDATE, SUM(AMOUNT-ISNULL(PPN,0)) AS NETSALES, 0 AS COGS
 				FROM TSALESINVOICE WHERE TRANSDATE BETWEEN @STARTDATE AND @ENDDATE
@@ -39,25 +39,9 @@ BEGIN
 
 
 	EXEC sp_OACreate 'MSXML2.XMLHTTP', @req OUT;
-
-	-- delete first
 	SET @URL = @BASEURL + 'salesperiod/' + @PROJECTCODE + '/' 
 				+ CAST(@startdate AS varchar(10)) + '/'
 				+ CAST(@enddate AS varchar(10));
-	EXEC sp_OAMethod @req, 'open', NULL, 'DELETE', @URL, 'false'
-	EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'text/html'
-	EXEC sp_OAMethod @req, 'send';
-	EXEC sp_OAGetProperty @req, 'status', @status OUT
-	if (@status <> 200) 
-	begin
-		INSERT INTO @ResponseText (ResponseText) EXEC sp_OAGetProperty @req, 'responseText'
-		set @msg  = @URL + ' => Error Code ' +  cast(@status as varchar(10))
-			+ CHAR(10)+ (select distinct isnull(responsetext,'') from @ResponseText);
-		THROW 51000, @msg, 1;  
-	end
-
-	-- post after
-	SET @URL = @BASEURL + 'salesperiod'; 
 	EXEC sp_OAMethod @req, 'open', NULL, 'post', @URL, 'false'
 	EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'application/json'
 	EXEC sp_OAMethod @req, 'send', null, @body
@@ -78,3 +62,6 @@ BEGIN
 
 
 END;
+GO
+
+

@@ -34,11 +34,15 @@ $app->get('/profitloss/{yearperiod}/{monthperiod}', function ($request, $respons
 	}
 });
 
-$app->post('/profitloss', function ($request, $response) {
+$app->post('/profitloss/{projectcode}/{yearperiod}/{monthperiod}', function ($request, $response) {
 	$json = $request->getBody();
+  $projectcode = $request->getAttribute('projectcode');
+  $monthperiod = $request->getAttribute('monthperiod');
+  $yearperiod = $request->getAttribute('yearperiod');
+
 	$obj = json_decode($json);
 	try{
-		ModelProfitLoss::saveBatch($obj);
+		ModelProfitLoss::saveBatch($obj, $projectcode, $yearperiod, $monthperiod);
     $json = json_encode($obj);
     $response->getBody()->write($json);
     return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
@@ -49,19 +53,4 @@ $app->post('/profitloss', function ($request, $response) {
 			->withHeader('Content-Type', 'text/html');
 	}
 
-});
-
-$app->delete('/profitloss/{projectcode}/{yearperiod}/{monthperiod}', function (Request $request, Response $response) {
-	$projectcode = $request->getAttribute('projectcode');
-  $monthperiod = $request->getAttribute('monthperiod');
-  $yearperiod = $request->getAttribute('yearperiod');
-	try{
-		ModelProfitLoss::deletePeriod($projectcode,$yearperiod,$monthperiod);
-    return $response;
-	}catch(Exception $e){
-		$msg = $e->getMessage();
-    $response->getBody()->write($msg);
-		return $response->withStatus(500)
-			->withHeader('Content-Type', 'text/html');
-	}
 });

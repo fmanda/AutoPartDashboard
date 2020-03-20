@@ -8,33 +8,15 @@
 			);
 		}
 
-		public static function saveToDB($obj){
+    public static function saveBatch($objs, $projectcode){
 			$db = new DB();
 			$db = $db->connect();
 			$db->beginTransaction();
 			try {
-				static::saveObjToDB($obj, $db);
-				$db->commit();
-				$db = null;
-			} catch (Exception $e) {
-				$db->rollback();
-				throw $e;
-			}
-		}
-
-		public static function deletePeriod($projectcode){
-			$str = static::generateSQLDelete(
-				"projectcode='". $projectcode . "'"
-			);
-			DB::executeSQL($str);
-		}
-
-
-    public static function saveBatch($objs){
-			$db = new DB();
-			$db = $db->connect();
-			$db->beginTransaction();
-			try {
+				$sql = static::generateSQLDelete(
+					"projectcode='". $projectcode . "'"
+				);
+				$db->prepare($sql)->execute();
         foreach ($objs as $obj) {
           static::saveObjToDB($obj, $db);
   			}

@@ -8,27 +8,17 @@
 			);
 		}
 
-		// public static function deletePeriod($projectcode, $startdate, $enddate){
-		// 	$str = static::generateSQLDelete(
-		// 		"projectcode='". $projectcode .
-		// 		"' and transdate between  '". $startdate .
-		// 		"' and '". $enddate . "'"
-		// 	);
-		// 	DB::executeSQL($str);
-		// }
-		//there is problem
-
     public static function saveBatch($objs, $projectcode, $startdate, $enddate){
 			$db = new DB();
 			$db = $db->connect();
 			$db->beginTransaction();
-			$sql = static::generateSQLDelete(
-					"projectcode='". $projectcode .
-					"' and transdate between  '". $startdate .
-					"' and '". $enddate . "'"
-			);
-			$db->prepare($sql)->execute();
 			try {
+				$sql = static::generateSQLDelete(
+						"projectcode='". $projectcode .
+						"' and transdate between  '". $startdate .
+						"' and '". $enddate . "'"
+				);
+				$db->prepare($sql)->execute();
         foreach ($objs as $obj) {
           static::saveObjToDB($obj, $db);
   			}

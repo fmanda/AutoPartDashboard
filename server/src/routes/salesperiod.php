@@ -54,18 +54,3 @@ $app->post('/salesperiod/{projectcode}/{startdate}/{enddate}', function ($reques
 	}
 
 });
-
-// $app->delete('/salesperiod/{projectcode}/{startdate}/{enddate}', function (Request $request, Response $response) {
-// 	$projectcode = $request->getAttribute('projectcode');
-//   $startdate = $request->getAttribute('startdate');
-//   $enddate = $request->getAttribute('enddate');
-// 	try{
-// 		ModelSalesPeriod::deletePeriod($projectcode,$startdate,$enddate);
-//     return $response;
-// 	}catch(Exception $e){
-// 		$msg = $e->getMessage();
-//     $response->getBody()->write($msg);
-// 		return $response->withStatus(500)
-// 			->withHeader('Content-Type', 'text/html');
-// 	}
-// });

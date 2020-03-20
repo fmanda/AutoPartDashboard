@@ -34,11 +34,14 @@ $app->get('/cashflow/{yearperiod}/{monthperiod}', function ($request, $response,
 	}
 });
 
-$app->post('/cashflow', function ($request, $response) {
+$app->post('/cashflow/{projectcode}/{yearperiod}/{monthperiod}', function ($request, $response) {
 	$json = $request->getBody();
+  $projectcode = $request->getAttribute('projectcode');
+  $yearperiod = $request->getAttribute('yearperiod');
+  $monthperiod = $request->getAttribute('monthperiod');
 	$obj = json_decode($json);
 	try{
-		ModelCashflow::saveBatch($obj);
+		ModelCashflow::saveBatch($obj, $projectcode, $yearperiod, $monthperiod);
     $json = json_encode($obj);
     $response->getBody()->write($json);
     return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
@@ -49,21 +52,6 @@ $app->post('/cashflow', function ($request, $response) {
 			->withHeader('Content-Type', 'text/html');
 	}
 
-});
-
-$app->delete('/cashflow/{projectcode}/{yearperiod}/{monthperiod}', function (Request $request, Response $response) {
-	$projectcode = $request->getAttribute('projectcode');
-  $monthperiod = $request->getAttribute('monthperiod');
-  $yearperiod = $request->getAttribute('yearperiod');
-	try{
-		ModelCashflow::deletePeriod($projectcode,$yearperiod,$monthperiod);
-    return $response;
-	}catch(Exception $e){
-		$msg = $e->getMessage();
-    $response->getBody()->write($msg);
-		return $response->withStatus(500)
-			->withHeader('Content-Type', 'text/html');
-	}
 });
 
 

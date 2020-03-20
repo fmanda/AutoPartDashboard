@@ -22,20 +22,18 @@
 			}
 		}
 
-		public static function deletePeriod($projectcode, $yearperiod, $monthperiod){
-			$str = static::generateSQLDelete(
-				"projectcode='". $projectcode .
-				"' and monthperiod = ". $monthperiod.
-				" and yearperiod = ". $yearperiod
-			);
-			DB::executeSQL($str);
-		}
 
-    public static function saveBatch($objs){
+    public static function saveBatch($objs, $projectcode, $yearperiod, $monthperiod){
 			$db = new DB();
 			$db = $db->connect();
 			$db->beginTransaction();
 			try {
+				$sql = static::generateSQLDelete(
+					"projectcode='". $projectcode .
+					"' and monthperiod = ". $monthperiod.
+					" and yearperiod = ". $yearperiod
+				);
+				$db->prepare($sql)->execute();
         foreach ($objs as $obj) {
           static::saveObjToDB($obj, $db);
   			}

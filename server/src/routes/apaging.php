@@ -23,11 +23,12 @@ $app->get('/apaging', function ($request, $response, $args) {
 	}
 });
 
-$app->post('/apaging', function ($request, $response) {
+$app->post('/apaging/{projectcode}', function ($request, $response) {
 	$json = $request->getBody();
+	$projectcode = $request->getAttribute('projectcode');
 	$obj = json_decode($json);
 	try{
-		ModelAPAging::saveBatch($obj);
+		ModelAPAging::saveBatch($obj, $projectcode);
     $json = json_encode($obj);
     $response->getBody()->write($json);
     return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
@@ -38,17 +39,4 @@ $app->post('/apaging', function ($request, $response) {
 			->withHeader('Content-Type', 'text/html');
 	}
 
-});
-
-$app->delete('/apaging/{projectcode}', function (Request $request, Response $response) {
-	$projectcode = $request->getAttribute('projectcode');
-	try{
-		ModelAPAging::deletePeriod($projectcode);
-    return $response;
-	}catch(Exception $e){
-		$msg = $e->getMessage();
-    $response->getBody()->write($msg);
-		return $response->withStatus(500)
-			->withHeader('Content-Type', 'text/html');
-	}
 });
