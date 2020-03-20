@@ -50,4 +50,14 @@
         android:name="com.fmanda.autopartdashboard.ui.salesperiod.SalesPeriodFragment"
         android:label="Sales Period"
         tools:layout="@layout/fragment_salesperiod" />
+    <fragment
+        android:id="@+id/nav_apaging"
+        android:name="com.fmanda.autopartdashboard.ui.apaging.APagingFragment"
+        android:label="fragment_apaging"
+        tools:layout="@layout/fragment_apaging" />
+    <fragment
+        android:id="@+id/nav_cashflow"
+        android:name="com.fmanda.autopartdashboard.ui.cashflow.CashflowFragment"
+        android:label="fragment_cashflow"
+        tools:layout="@layout/fragment_cashflow" />
 </navigation>

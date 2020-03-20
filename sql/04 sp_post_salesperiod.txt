@@ -18,7 +18,7 @@ BEGIN
 	DECLARE @Body AS VARCHAR(MAX) = 
 		(
 			
-			SELECT @PROJECTCODE as projectcode, transdate, SUM(netsales) AS netsales, SUM(cogs) AS cogs
+			SELECT @PROJECTCODE as projectcode, transdate, SUM(netsales) AS netsales, SUM(cogs) AS cogs, sum(netsales-cogs) as grossprofit
 			FROM (
 				SELECT TRANSDATE, SUM(AMOUNT-ISNULL(PPN,0)) AS NETSALES, 0 AS COGS
 				FROM TSALESINVOICE WHERE TRANSDATE BETWEEN @STARTDATE AND @ENDDATE

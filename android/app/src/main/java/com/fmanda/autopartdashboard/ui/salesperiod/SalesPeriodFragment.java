@@ -144,7 +144,8 @@ public class SalesPeriodFragment extends Fragment {
             @Override
             public void onError(String msg) {
                 Toast.makeText(getContext(), "Gagal koneksi ke REST Server", Toast.LENGTH_SHORT).show();
-                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();            }
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
 
             @Override
             public void onProgress(String msg) {
