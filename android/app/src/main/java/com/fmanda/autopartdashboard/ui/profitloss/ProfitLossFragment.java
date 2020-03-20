@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -52,6 +53,7 @@ public class ProfitLossFragment extends Fragment {
     boolean spMonthinit = true;
     boolean spYearinit = true;
     List<ModelProject> projects = new ArrayList<>();
+    ProgressBar progressBar;
 
     public static ProfitLossFragment newInstance() {
         return new ProfitLossFragment();
@@ -67,6 +69,8 @@ public class ProfitLossFragment extends Fragment {
         profitLossAdapter = new ProfitLossAdapter(getContext(), mViewModel.groups, mViewModel.profits);
         rvProfit.setLayoutManager(new GridLayoutManager(getContext(), 1));
         rvProfit.setAdapter(profitLossAdapter);
+        progressBar = new ProgressBar(getContext());
+        progressBar.animate();
 
         final Button btnExpand = root.findViewById(R.id.btnExpand);
         btnExpand.setOnClickListener(new View.OnClickListener() {
