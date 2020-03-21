@@ -13,8 +13,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.fmanda.autopartdashboard.R;
@@ -46,6 +50,7 @@ public class SalesPeriodFragment extends Fragment {
     private SalesPeriodViewModel mViewModel;
     private RecyclerView rvSales;
     private SalesPeriodAdapter salesPeriodAdapter;
+
     BarChart chart ;
 
 
@@ -54,8 +59,15 @@ public class SalesPeriodFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_filter, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(SalesPeriodViewModel.class);
         View root = inflater.inflate(R.layout.fragment_salesperiod, container, false);
         rvSales = root.findViewById(R.id.rvSales);
@@ -63,6 +75,8 @@ public class SalesPeriodFragment extends Fragment {
         rvSales.setLayoutManager(new GridLayoutManager(getContext(), 1));
         rvSales.setAdapter(salesPeriodAdapter);
         chart = root.findViewById(R.id.chart);
+
+        root.findViewById(R.id.lnParam);
         loadFromRest();
         return root;
     }
@@ -155,4 +169,11 @@ public class SalesPeriodFragment extends Fragment {
         cr.DownloadSalesPeriod(dtStart, dtEnd);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.tb_tune){
+            Toast.makeText(getContext(), "hahah", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
