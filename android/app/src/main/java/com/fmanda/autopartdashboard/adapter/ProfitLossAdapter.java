@@ -1,5 +1,7 @@
 package com.fmanda.autopartdashboard.adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,7 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
     private LayoutInflater mInflater;
     private ItemClickListener itemClickListener;
     public boolean isExpand = true;
+    private static final long DURATION = 1000;
 
     public ProfitLossAdapter(Context context, List<ModelProfitLoss> groups, List<ModelProfitLoss> profits) {
         this.context = context;
@@ -56,24 +59,6 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
 //        viewHolder.txtSumValue.setText(CurrencyHelper.format(viewHolder.ModelProfitLoss.getReportval()));
         viewHolder.txtSumName.setText("Total " + viewHolder.txtNama.getText());
 
-
-//        if (viewHolder.ModelProfitLoss.getReportval() < 0){
-//            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorWarning));
-//        }else {
-//            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorMoney));
-//        }
-
-
-//        viewHolder.rvDetail.setVisibility(View.GONE);
-//        viewHolder.txtVal.setVisibility(View.GONE);
-//        viewHolder.lnSummary.setVisibility(View.GONE);
-
-
-//        else{
-//            viewHolder.rvDetail.setVisibility(View.VISIBLE);
-//            viewHolder.txtSumName.setVisibility(View.GONE);
-//        }
-//        viewHolder.txtSumName.setVisibility(View.GONE);
         if (isExpand){
             viewHolder.rvDetail.setVisibility(View.VISIBLE);
             viewHolder.txtSumName.setVisibility(View.VISIBLE);
@@ -98,6 +83,7 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
 //            viewHolder.lnGroup.setVisibility(View.GONE);
             viewHolder.lnGroup.setLayoutParams(viewHolder.hideparams);
         }
+        Animate(viewHolder.itemView, i);
 
     }
 
@@ -152,6 +138,19 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
         this.itemClickListener = itemClickListener;
     }
 
+    private void Animate(View itemView, int i) {
+        itemView.setTranslationX(itemView.getX() + 400);
+        itemView.setAlpha(0.f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator animatorTranslateY = ObjectAnimator.ofFloat(itemView, "translationX", itemView.getX() + 400, 0);
+        ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(itemView, "alpha", 1.f);
+        ObjectAnimator.ofFloat(itemView, "alpha", 0.f).start();
+        animatorTranslateY.setDuration(DURATION);
+        animatorSet.playTogether(animatorTranslateY, animatorAlpha);
+        animatorSet.start();
+
+    }
+
 
 }
 
@@ -178,10 +177,6 @@ class ProfitLossDetail extends RecyclerView.Adapter<ProfitLossDetail.ViewHolder>
         viewHolder.ModelProfitLoss = profits.get(i);
         viewHolder.txtVal.setText(CurrencyHelper.format(viewHolder.ModelProfitLoss.getReportval()));
         viewHolder.txtName.setText(viewHolder.ModelProfitLoss.getReportname());
-//        if (viewHolder.ModelProfitLoss.getReportval() < 0){
-//            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorWarning));
-//        }else
-//            viewHolder.txtVal.setTextColor(context.getColor(R.color.colorMoney));
     }
 
     @Override
@@ -206,6 +201,8 @@ class ProfitLossDetail extends RecyclerView.Adapter<ProfitLossDetail.ViewHolder>
 
         }
     }
+
+
 
 
 }

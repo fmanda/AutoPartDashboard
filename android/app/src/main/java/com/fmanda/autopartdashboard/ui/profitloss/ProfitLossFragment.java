@@ -57,7 +57,7 @@ public class ProfitLossFragment extends Fragment {
     boolean spMonthinit = true;
     boolean spYearinit = true;
     List<ModelProject> projects = new ArrayList<>();
-    ProgressBar progressBar;
+//    ProgressBar progressBar;
     LinearLayout lnParam;
 
     public static ProfitLossFragment newInstance() {
@@ -77,8 +77,8 @@ public class ProfitLossFragment extends Fragment {
         profitLossAdapter = new ProfitLossAdapter(getContext(), mViewModel.groups, mViewModel.profits);
         rvProfit.setLayoutManager(new GridLayoutManager(getContext(), 1));
         rvProfit.setAdapter(profitLossAdapter);
-        progressBar = new ProgressBar(getContext());
-        progressBar.animate();
+//        progressBar = new ProgressBar(getContext());
+//        progressBar.animate();
 
         final Button btnExpand = root.findViewById(R.id.btnExpand);
         btnExpand.setOnClickListener(new View.OnClickListener() {
