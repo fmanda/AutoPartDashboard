@@ -65,7 +65,7 @@ public class SalesPeriodFragment extends Fragment {
     boolean spProjectinit = true;
     boolean spPeriodInit = true;
 
-    BarChart chart ;
+    BarChart chart;
 
 
     public static SalesPeriodFragment newInstance() {
@@ -188,7 +188,6 @@ public class SalesPeriodFragment extends Fragment {
             };
 //
             XAxis xAxis = chart.getXAxis();
-//            xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
             xAxis.setValueFormatter(formatter);
 
             BarDataSet dataSet1 = new BarDataSet(entries1, "Net Sales");
@@ -222,7 +221,7 @@ public class SalesPeriodFragment extends Fragment {
         final Date dtEnd = c.getTime();
 
         if (spPeriod.getSelectedItemPosition() == 0) {
-            c.add(Calendar.DAY_OF_YEAR, -14);
+            c.add(Calendar.DAY_OF_YEAR, -7);
         }
         else{
             c.add(Calendar.DAY_OF_YEAR, -30);

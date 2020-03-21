@@ -17,7 +17,7 @@ public class ModelProfitLoss extends BaseModel {
     @TableField
     private Double reportval;
     @TableField
-    private int reportindex;
+    private int reportidx;
     @TableField
     private int reportgroup;
 
@@ -26,7 +26,7 @@ public class ModelProfitLoss extends BaseModel {
     }
 
     public Boolean isGroup(){
-        return reportindex == reportgroup;
+        return reportidx == reportgroup;
     }
 
     public String getProjectcode() {
@@ -77,12 +77,12 @@ public class ModelProfitLoss extends BaseModel {
         this.reportval = reportval;
     }
 
-    public int getReportindex() {
-        return reportindex;
+    public int getReportidx() {
+        return reportidx;
     }
 
     public void setReportindex(int reportindex) {
-        this.reportindex = reportindex;
+        this.reportidx = reportindex;
     }
 
     public int getReportgroup() {

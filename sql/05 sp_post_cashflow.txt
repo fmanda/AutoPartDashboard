@@ -20,7 +20,10 @@ BEGIN
 	DECLARE @Body AS VARCHAR(MAX) = 
 		(			
 			select @PROJECTCODE as projectcode, @MONTHPERIOD as monthperiod, @YEARPERIOD as yearperiod,
-			sum(purchase) as purchase, sum(sales) as sales, sum(otherincome) as otherincome, sum(otherexpense) as otherexpense
+			isnull(sum(purchase),0) as purchase, 
+			isnull(sum(sales),0) as sales, 
+			isnull(sum(otherincome),0) as otherincome, 
+			isnull(sum(otherexpense),0) as otherexpense
 			from (
 				SELECT 
 				CASE WHEN (HEADER_FLAG = 100) then sum(creditamt)  else 0 end as purchase,

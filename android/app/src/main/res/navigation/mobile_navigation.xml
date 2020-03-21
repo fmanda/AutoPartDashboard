@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/nav_setting"
         android:name="com.fmanda.autopartdashboard.ui.setting.SettingFragment"
-        android:label="fragment_setting"
+        android:label="Setting App"
         tools:layout="@layout/fragment_setting" />
     <fragment
         android:id="@+id/nav_sales"
@@ -53,11 +53,11 @@
     <fragment
         android:id="@+id/nav_apaging"
         android:name="com.fmanda.autopartdashboard.ui.apaging.APagingFragment"
-        android:label="fragment_apaging"
+        android:label="Saldo Hutang"
         tools:layout="@layout/fragment_apaging" />
     <fragment
         android:id="@+id/nav_cashflow"
         android:name="com.fmanda.autopartdashboard.ui.cashflow.CashflowFragment"
-        android:label="fragment_cashflow"
+        android:label="Cash Flow"
         tools:layout="@layout/fragment_cashflow" />
 </navigation>

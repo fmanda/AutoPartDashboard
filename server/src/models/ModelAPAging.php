@@ -14,9 +14,10 @@
 			$db->beginTransaction();
 			try {
 				$sql = static::generateSQLDelete(
-					"projectcode='". $projectcode . "'"
+					" projectcode='". $projectcode . "'"
 				);
 				$db->prepare($sql)->execute();
+
         foreach ($objs as $obj) {
           static::saveObjToDB($obj, $db);
   			}

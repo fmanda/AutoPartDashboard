@@ -176,21 +176,25 @@ public class ProfitLossFragment extends Fragment {
     }
 
     private void loadProfits(){
-        String paramProject = "";
-        for (ModelProject project : projects){
-            if (project.getProjectname() == spProject.getSelectedItem().toString()){
-                paramProject = project.getProjectcode();
+        try {
+            String paramProject = "";
+            for (ModelProject project : projects) {
+                if (project.getProjectname() == spProject.getSelectedItem().toString()) {
+                    paramProject = project.getProjectcode();
+                }
             }
-        }
 
-        ControllerProfitLoss controllerProfitLoss = new ControllerProfitLoss(getContext());
-        mViewModel.profits.clear();
-        mViewModel.profits.addAll(controllerProfitLoss.getProfitLoss(
-                paramProject,spMonth.getSelectedItemPosition()+1, Integer.parseInt(spYear.getSelectedItem().toString()))
-        );
-        mViewModel.groups.clear();
-        mViewModel.groups.addAll(ModelProfitLoss.getGroups(mViewModel.profits));
-        profitLossAdapter.notifyDataSetChanged();
+            ControllerProfitLoss controllerProfitLoss = new ControllerProfitLoss(getContext());
+            mViewModel.profits.clear();
+            mViewModel.profits.addAll(controllerProfitLoss.getProfitLoss(
+                    paramProject, spMonth.getSelectedItemPosition() + 1, Integer.parseInt(spYear.getSelectedItem().toString()))
+            );
+            mViewModel.groups.clear();
+            mViewModel.groups.addAll(ModelProfitLoss.getGroups(mViewModel.profits));
+            profitLossAdapter.notifyDataSetChanged();
+        }catch(Exception e){
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadFromRest(){

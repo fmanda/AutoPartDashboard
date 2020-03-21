@@ -29,11 +29,12 @@ public class ControllerProfitLoss {
             List<ModelProfitLoss> profits = new ArrayList<ModelProfitLoss>();
             DBHelper db = DBHelper.getInstance(context);
             SQLiteDatabase rdb = db.getReadableDatabase();
-            String sql = "select * from profitloss";
+            String sql = "select reportname, sum(reportval) as reportval, reportgroup, groupname,  min(reportidx) as reportidx from profitloss";
             sql += " where monthperiod = " + String.valueOf(monthperiod) + " and yearperiod = " + String.valueOf(yearperiod);
             if (projectcode != "" && projectcode != "0") {
                 sql += " and projectcode = '" + projectcode + "'";
             }
+            sql += " group by reportidx, reportname, reportgroup, groupname ";
 
             Cursor cursor = rdb.rawQuery(sql, null);
             while (cursor.moveToNext()) {

@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        navController.navigate(R.id.nav_sales);
+        navController.navigate(R.id.nav_profitLoss);
 //        setBackgroundColor(this.getColor(R.color.colorBackground));
     }
 

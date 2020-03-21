@@ -23,24 +23,23 @@ public class ControllerCashFlow {
     }
 
 
-    public List<ModelCashFlow> getCashFlow(String projectcode, int monthperiod, int yearperiod){
+    public ModelCashFlow getCashFlow(String projectcode, int monthperiod, int yearperiod){
         try {
-            List<ModelCashFlow> cashFlows = new ArrayList<ModelCashFlow>();
             DBHelper db = DBHelper.getInstance(context);
             SQLiteDatabase rdb = db.getReadableDatabase();
-            String sql = "select * from cashflow";
+            String sql = "select sum(sales) as sales, sum(purchase) as purchase, sum(otherincome) as otherincome, sum(otherexpense) as otherexpense from cashflow";
             sql += " where monthperiod = " + String.valueOf(monthperiod) + " and yearperiod = " + String.valueOf(yearperiod);
             if (projectcode != "" && projectcode != "0") {
                 sql += " and projectcode = '" + projectcode + "'";
             }
 
             Cursor cursor = rdb.rawQuery(sql, null);
-            while (cursor.moveToNext()) {
+            if (cursor.moveToNext()) {
                 ModelCashFlow cashFlow = new ModelCashFlow();
                 cashFlow.loadFromCursor(cursor);
-                cashFlows.add(cashFlow);
+                return cashFlow;
             }
-            return cashFlows;
+            return new ModelCashFlow();
         }catch(Exception e){
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }

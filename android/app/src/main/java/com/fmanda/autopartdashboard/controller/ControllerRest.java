@@ -8,6 +8,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.RequestFuture;
 import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.fmanda.autopartdashboard.helper.GsonRequest;
+import com.fmanda.autopartdashboard.model.ModelAPAging;
+import com.fmanda.autopartdashboard.model.ModelCashFlow;
 import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
 import com.fmanda.autopartdashboard.model.ModelSalesPeriod;
@@ -84,6 +86,11 @@ public class ControllerRest {
     public String url_profitloss(){
         return base_url() + "profitloss";
     }
+
+    public String url_cashflow(){
+        return base_url() + "cashflow";
+    }
+
 
     public String url_salesperiod(){
         return base_url() + "salesperiod";
@@ -247,6 +254,77 @@ public class ControllerRest {
             log(e.toString());
         }
     }
+
+    public boolean DownloadAgingAP(){
+        String url = base_url() + "apaging";
+
+        GsonRequest<ModelAPAging[]> gsonReq = new GsonRequest<>(url, ModelAPAging[].class,
+                new Response.Listener<ModelAPAging[]>() {
+                    @Override
+                    public void onResponse(ModelAPAging[] response) {
+                        SaveAgingAP(response);
+                        listener.onSuccess("");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error.toString());
+                    }
+                }
+        );
+        this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+        return true;
+    }
+
+    private void SaveAgingAP(ModelAPAging[] agings){
+        try {
+            db.getWritableDatabase().execSQL(new ModelAPAging().generateSQLDelete("")); //always delete all record projects
+
+            for (ModelAPAging aging : agings) {
+                aging.setId(0);
+                aging.saveToDB(db.getWritableDatabase());
+            }
+        }catch(Exception e){
+            log(e.toString());
+        }
+    }
+
+    private void SaveCashFlow(ModelCashFlow[] cashFlows, int monthperiod, int yearperiod){
+        try {
+            db.getWritableDatabase().execSQL(new ModelCashFlow().generateSQLDelete
+                    ("where monthperiod = " + String.valueOf(monthperiod)
+                            + " and yearperiod = " + String.valueOf(yearperiod))); //always delete all record projects
+
+            for (ModelCashFlow cashFlow : cashFlows) {
+                cashFlow.setId(0);
+                cashFlow.saveToDB(db.getWritableDatabase());
+            }
+        }catch(Exception e){
+            log(e.toString());
+        }
+    }
+    public boolean DownloadCashFlow(final int monthperiod, final int yearperiod){
+        String url = url_cashflow() + "/" + String.valueOf(yearperiod) + "/" + String.valueOf(monthperiod);
+        GsonRequest<ModelCashFlow[]> gsonReq = new GsonRequest<>(url, ModelCashFlow[].class,
+                new Response.Listener<ModelCashFlow[]>() {
+                    @Override
+                    public void onResponse(ModelCashFlow[] response) {
+                        SaveCashFlow(response, monthperiod, yearperiod);
+                        listener.onSuccess("");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error.toString());
+                    }
+                }
+        );
+        this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+        return true;
+    }
+
 
     public void SyncData( final Boolean async){
         try {

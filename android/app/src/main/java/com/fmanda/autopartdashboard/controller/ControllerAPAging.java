@@ -3,6 +3,7 @@ package com.fmanda.autopartdashboard.controller;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.ColorSpace;
 import android.widget.Toast;
 
 import com.fmanda.autopartdashboard.helper.DBHelper;
@@ -22,19 +23,25 @@ public class ControllerAPAging {
         this.context = context;
     }
 
-    public List<ModelAPAging> getAPAging(){
+    public ModelAPAging getAPAging(String projectcode){
         try {
-            List<ModelAPAging> modelAPAgings = new ArrayList<ModelAPAging>();
-
             DBHelper db = DBHelper.getInstance(context);
             SQLiteDatabase rdb = db.getReadableDatabase();
-            Cursor cursor = rdb.rawQuery("select * from apaging", null);
-            while (cursor.moveToNext()) {
+
+            String sql = "select sum(current) as current,  sum(range1) as range1, sum(range2) as range2, " +
+                    " sum(range3) as range3, sum(range4) as range4, sum(total) as total  from apaging";
+
+            if (projectcode != "" && projectcode != "0") {
+                sql += " where projectcode = '" + projectcode + "'";
+            }
+            Cursor cursor = rdb.rawQuery(sql, null);
+            if (cursor.moveToNext()) {
                 ModelAPAging modelAPAging = new ModelAPAging();
                 modelAPAging.loadFromCursor(cursor);
-                modelAPAgings.add(modelAPAging);
+                return modelAPAging;
             }
-            return modelAPAgings;
+
+            return new ModelAPAging();
         }catch(Exception e){
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
         }

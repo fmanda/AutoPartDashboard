@@ -35,7 +35,7 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
     private LayoutInflater mInflater;
     private ItemClickListener itemClickListener;
     public boolean isExpand = true;
-    private static final long DURATION = 1000;
+    private static final long DURATION = 500;
 
     public ProfitLossAdapter(Context context, List<ModelProfitLoss> groups, List<ModelProfitLoss> profits) {
         this.context = context;
@@ -59,20 +59,24 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
 //        viewHolder.txtSumValue.setText(CurrencyHelper.format(viewHolder.ModelProfitLoss.getReportval()));
         viewHolder.txtSumName.setText("Total " + viewHolder.txtNama.getText());
 
-        if (isExpand){
-            viewHolder.rvDetail.setVisibility(View.VISIBLE);
-            viewHolder.txtSumName.setVisibility(View.VISIBLE);
-        }else{
-            viewHolder.rvDetail.setVisibility(View.GONE);
-            viewHolder.txtSumName.setVisibility(View.GONE);
-        }
+//        if (isExpand){
+//            viewHolder.rvDetail.setVisibility(View.VISIBLE);
+//            viewHolder.txtSumName.setVisibility(View.VISIBLE);
+//        }else{
+//            viewHolder.rvDetail.setVisibility(View.GONE);
+//            viewHolder.txtSumName.setVisibility(View.GONE);
+//        }
 
         //override here
         Integer[] groupOnly = {200,250,400,450,500};
         if (Arrays.asList(groupOnly).contains(viewHolder.ModelProfitLoss.getReportgroup() )) {
             viewHolder.rvDetail.setVisibility(View.GONE);
             viewHolder.txtSumName.setVisibility(View.GONE);
+        }else{
+            viewHolder.rvDetail.setVisibility(View.VISIBLE);
+            viewHolder.txtSumName.setVisibility(View.VISIBLE);
         }
+
 
         ProfitLossDetail ProfitLossDetail = new ProfitLossDetail(context,
                 ModelProfitLoss.getDetails(this.profits, viewHolder.ModelProfitLoss.getReportgroup()));
@@ -82,6 +86,8 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
         if (viewHolder.ModelProfitLoss.getReportval() == 0){
 //            viewHolder.lnGroup.setVisibility(View.GONE);
             viewHolder.lnGroup.setLayoutParams(viewHolder.hideparams);
+        }else{
+            viewHolder.lnGroup.setLayoutParams(viewHolder.showparams);
         }
         Animate(viewHolder.itemView, i);
 
@@ -104,6 +110,7 @@ public class ProfitLossAdapter extends RecyclerView.Adapter<ProfitLossAdapter.Vi
         public RecyclerView rvDetail;
         public LinearLayout lnSummary;
         public LinearLayout.LayoutParams hideparams = new LinearLayout.LayoutParams(0, 0);
+        public LinearLayout.LayoutParams showparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -29,13 +29,13 @@ public class ControllerSalesPeriod {
             List<ModelSalesPeriod> profits = new ArrayList<ModelSalesPeriod>();
             DBHelper db = DBHelper.getInstance(context);
             SQLiteDatabase rdb = db.getReadableDatabase();
-            String sql = "select * from salesperiod";
+            String sql = "select transdate, sum(netsales) as netsales, sum(cogs) as cogs, sum(grossprofit) as grossprofit from salesperiod";
             sql += " where transdate between '" + String.valueOf(startdate.getTime())
                  + "' and '" + String.valueOf(enddate.getTime()) + "'";
             if (projectcode != "" && projectcode != "0") {
                 sql += " and projectcode = '" + projectcode + "'";
             }
-
+            sql += " group by transdate ";
             sql += " order by transdate desc ";
 
             Cursor cursor = rdb.rawQuery(sql, null);
