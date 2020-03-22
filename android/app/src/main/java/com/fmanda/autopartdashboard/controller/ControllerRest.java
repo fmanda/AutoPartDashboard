@@ -8,8 +8,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.RequestFuture;
 import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.fmanda.autopartdashboard.helper.GsonRequest;
+import com.fmanda.autopartdashboard.model.BaseModel;
 import com.fmanda.autopartdashboard.model.ModelAPAging;
 import com.fmanda.autopartdashboard.model.ModelCashFlow;
+import com.fmanda.autopartdashboard.model.ModelCurrentSales;
 import com.fmanda.autopartdashboard.model.ModelInventory;
 import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
@@ -43,12 +45,18 @@ public class ControllerRest {
 
     private ControllerRequest controllerRequest;
     protected Listener listener;
+    protected ObjectListener objectListener;
 
 
     public interface Listener {
         void onSuccess(String msg);
         void onError(String msg); //beware using this on asynctask, u will get exception
         void onProgress(String msg);
+    }
+
+    public interface ObjectListener {
+        void onSuccess(BaseModel[] obj);
+        void onError(String msg);
     }
 
     private AsyncTaskListener asyncTaskListener;
@@ -60,6 +68,10 @@ public class ControllerRest {
 
     public void setListener(ControllerRest.Listener listener) {
         this.listener = listener;
+    }
+
+    public void setObjectListener(ControllerRest.ObjectListener objectListener) {
+        this.objectListener = objectListener;
     }
 
     public void setAsyncTaskListenerListener(ControllerRest.AsyncTaskListener listener) {
@@ -90,6 +102,10 @@ public class ControllerRest {
 
     public String url_cashflow(){
         return base_url() + "cashflow";
+    }
+
+    public String url_currentsales(){
+        return base_url() + "currentsales";
     }
 
 
@@ -194,12 +210,12 @@ public class ControllerRest {
                         }
                     }
             );
-            this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+            this.controllerRequest.addToRequestQueue(gsonReq, url);
             return true;
         }else {
             RequestFuture<ModelProfitLoss[]> future = RequestFuture.newFuture();
             GsonRequest<ModelProfitLoss[]> gsonReq = new GsonRequest<>(url, ModelProfitLoss[].class, future, future);
-            this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+            this.controllerRequest.addToRequestQueue(gsonReq, url);
 
             try {
                 ModelProfitLoss[] response = future.get(10, TimeUnit.SECONDS);
@@ -233,7 +249,7 @@ public class ControllerRest {
                     }
                 }
         );
-        this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+        this.controllerRequest.addToRequestQueue(gsonReq, url);
         return true;
     }
 
@@ -274,7 +290,7 @@ public class ControllerRest {
                     }
                 }
         );
-        this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+        this.controllerRequest.addToRequestQueue(gsonReq, url);
         return true;
     }
 
@@ -292,24 +308,28 @@ public class ControllerRest {
     }
 
     public boolean DownloadInventory(){
-        String url = base_url() + "inventory";
+        try {
+            String url = base_url() + "inventory";
 
-        GsonRequest<ModelInventory[]> gsonReq = new GsonRequest<>(url, ModelInventory[].class,
-                new Response.Listener<ModelInventory[]>() {
-                    @Override
-                    public void onResponse(ModelInventory[] response) {
-                        SaveInventory(response);
-                        listener.onSuccess("");
+            GsonRequest<ModelInventory[]> gsonReq = new GsonRequest<>(url, ModelInventory[].class,
+                    new Response.Listener<ModelInventory[]>() {
+                        @Override
+                        public void onResponse(ModelInventory[] response) {
+                            SaveInventory(response);
+                            listener.onSuccess("");
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            listener.onError(error.toString());
+                        }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        listener.onError(error.toString());
-                    }
-                }
-        );
-        this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+            );
+            this.controllerRequest.addToRequestQueue(gsonReq, url);
+        }catch(Exception e){
+
+        }
         return true;
     }
 
@@ -357,7 +377,113 @@ public class ControllerRest {
                     }
                 }
         );
-        this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+        this.controllerRequest.addToRequestQueue(gsonReq, url);
+        return true;
+    }
+
+    public boolean DownloadCurrentSales(){
+        try{
+            String url = url_currentsales();
+
+            GsonRequest<ModelCurrentSales[]> gsonReq = new GsonRequest<>(url, ModelCurrentSales[].class,
+                    new Response.Listener<ModelCurrentSales[]>() {
+                        @Override
+                        public void onResponse(ModelCurrentSales[] response) {
+                            if (objectListener != null){
+                                objectListener.onSuccess(response);
+                            }
+                            if (listener != null) {
+                                listener.onSuccess("");
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (objectListener != null){
+                                objectListener.onError(error.toString());
+                            }
+                            if (listener != null) {
+                                listener.onError("");
+                            }
+                        }
+                    });
+
+            this.controllerRequest.addToRequestQueue(gsonReq, url);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+
+    public boolean DownloadCurrentInventory(){
+        try {
+            String url = base_url() + "inventory";
+
+            GsonRequest<ModelInventory[]> gsonReq = new GsonRequest<>(url, ModelInventory[].class,
+                    new Response.Listener<ModelInventory[]>() {
+                        @Override
+                        public void onResponse(ModelInventory[] response) {
+                            if (objectListener != null){
+                                objectListener.onSuccess(response);
+                            }
+                            if (listener != null) {
+                                listener.onSuccess("");
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (objectListener != null){
+                                objectListener.onError(error.toString());
+                            }
+                            if (listener != null) {
+                                listener.onError(error.toString());
+                            }
+                        }
+                    }
+            );
+            this.controllerRequest.addToRequestQueue(gsonReq, url);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean DownloadCurrentAPAging(){
+        try {
+            String url = base_url() + "apaging";
+
+            GsonRequest<ModelAPAging[]> gsonReq = new GsonRequest<>(url, ModelAPAging[].class,
+                    new Response.Listener<ModelAPAging[]>() {
+                        @Override
+                        public void onResponse(ModelAPAging[] response) {
+                            if (objectListener != null){
+                                objectListener.onSuccess(response);
+                            }
+                            if (listener != null) {
+                                listener.onSuccess("");
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (objectListener != null){
+                                objectListener.onError(error.toString());
+                            }
+                            if (listener != null) {
+                                listener.onError(error.toString());
+                            }
+                        }
+                    }
+            );
+            this.controllerRequest.addToRequestQueue(gsonReq, url);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return true;
     }
 

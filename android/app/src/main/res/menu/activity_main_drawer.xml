@@ -30,7 +30,7 @@
 <!--            android:icon="@drawable/ic_menu_rice"-->
 <!--            android:title="@string/menu_araging" />-->
         <item
-            android:id="@+id/nav_agingstock"
+            android:id="@+id/nav_inventory"
             android:icon="@drawable/ic_menu_stock"
             android:title="@string/menu_agingstock" />
 

@@ -1,0 +1,23 @@
+create view v_currentsales as
+select projectcode, sum(netsales_mtd) as netsales_mtd,
+sum(netsales_ytd) as netsales_ytd,
+sum(grossprofit_mtd) as grossprofit_mtd,
+sum(grossprofit_ytd) as grossprofit_ytd
+from (
+	select projectcode,  0 as netsales_mtd, 0 as grossprofit_mtd,
+	sum(netsales) as netsales_ytd, sum(grossprofit) as grossprofit_ytd
+	from 
+	salesperiod
+	where transdate between DATE_FORMAT(NOW() ,'%Y-01-01') and NOW()
+	group by projectcode
+	union all
+	select projectcode,  sum(netsales) as netsales_mtd, sum(grossprofit) as grossprofit_mtd,
+	0 as netsales_ytd, 0 as grossprofit_ytd
+	from salesperiod
+	where transdate between DATE_FORMAT(NOW() ,'%Y-%m-01') and NOW()
+	group by projectcode
+) as R
+group by projectcode
+
+
+select * from v_currentsales

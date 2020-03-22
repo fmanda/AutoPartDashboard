@@ -6,5 +6,25 @@
     android:orientation="vertical"
     tools:context=".ui.inventory.InventoryFragment">
 
+    <LinearLayout
+        android:id="@+id/lnParam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:padding="5dp">
+        <Spinner
+            android:id="@+id/spProject"
+            style="@android:style/Widget.Holo.Light.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end" />
+    </LinearLayout>
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvInventory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

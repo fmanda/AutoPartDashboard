@@ -1,5 +1,7 @@
 package com.fmanda.autopartdashboard.adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -65,9 +67,10 @@ public class SalesPeriodAdapter extends RecyclerView.Adapter<SalesPeriodAdapter.
                 viewHolder.txtDay.setTextColor(context.getColor(R.color.colorWarning));
                 viewHolder.txtDate.setTextColor(context.getColor(R.color.colorWarning));
             }else{
-                viewHolder.txtDay.setTextColor(Color.BLACK);
-                viewHolder.txtDate.setTextColor(Color.BLACK);
+                viewHolder.txtDay.setTextColor(context.getColor(R.color.colorRegulerText));
+                viewHolder.txtDate.setTextColor(context.getColor(R.color.colorRegulerText));
             }
+            Animate(viewHolder.itemView, i);
         }catch(Exception e){
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -110,6 +113,19 @@ public class SalesPeriodAdapter extends RecyclerView.Adapter<SalesPeriodAdapter.
 
     public void setItemClickListener(ItemClickListener itemClickListener){
         this.itemClickListener = itemClickListener;
+    }
+
+    private void Animate(View itemView, int i) {
+        itemView.setTranslationX(itemView.getX() + 400);
+        itemView.setAlpha(0.f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator animatorTranslateY = ObjectAnimator.ofFloat(itemView, "translationX", itemView.getX() + 400, 0);
+        ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(itemView, "alpha", 1.f);
+        ObjectAnimator.ofFloat(itemView, "alpha", 0.f).start();
+        animatorTranslateY.setDuration(500);
+        animatorSet.playTogether(animatorTranslateY, animatorAlpha);
+        animatorSet.start();
+
     }
 
 

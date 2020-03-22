@@ -3,6 +3,8 @@ package com.fmanda.autopartdashboard.ui.salesperiod;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
