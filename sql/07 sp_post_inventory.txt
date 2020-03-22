@@ -1,4 +1,4 @@
-ALTER PROCEDURE SP_POST_APAGING
+CREATE PROCEDURE SP_POST_INVENTORY
 AS 
 BEGIN
 	DECLARE @BASEURL VARCHAR(100) = (SELECT DISTINCT VARVALUE FROM TVARIABLE WHERE VARNAME = 'REST_URL')	
@@ -9,16 +9,18 @@ BEGIN
 	DECLARE @ResponseText as table(responseText nvarchar(max))
 	declare @msg varchar(max) 
 
+	DECLARE @ENDDATE DATE = GETDATE();
+	DECLARE @STARTDATE DATE = DATEADD(yy, DATEDIFF(yy, 0, @ENDDATE), 0)
+
 
 	DECLARE @Body AS VARCHAR(MAX) = 
 		(
-			SELECT @PROJECTCODE as projectcode, sum([current]) as [current], 
-			sum(range1) as range1, 
-			sum(range2) as range2, 
-			sum(range3) as range3,
-			sum(range4) as range4,
-			sum(remain) as total
-			FROM FN_AP_AGING(getdate())
+			SELECT @PROJECTCODE as projectcode, B.HEADER_FLAG as header_flag, SUM(A.QTY * A.HARGAAVG) AS amount
+			FROM TTRANSDETAIL A
+			INNER JOIN THEADERFLAG B ON A.HEADER_FLAG = B.HEADER_FLAG
+			WHERE A.TRANSDATE BETWEEN @STARTDATE AND @ENDDATE
+			GROUP BY B.HEADER_FLAG
+			ORDER BY B.HEADER_FLAG
 			FOR JSON PATH
 		)
 
@@ -26,7 +28,7 @@ BEGIN
 	EXEC sp_OACreate 'MSXML2.XMLHTTP', @req OUT;
 
 	-- post after
-	SET @URL = @BASEURL + 'apaging/'+ @PROJECTCODE; 
+	SET @URL = @BASEURL + 'inventory/'+ @PROJECTCODE; 
 	EXEC sp_OAMethod @req, 'open', NULL, 'post', @URL, 'false'
 	EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'application/json'
 	EXEC sp_OAMethod @req, 'send', null, @body

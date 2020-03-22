@@ -10,6 +10,7 @@ import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.fmanda.autopartdashboard.helper.GsonRequest;
 import com.fmanda.autopartdashboard.model.ModelAPAging;
 import com.fmanda.autopartdashboard.model.ModelCashFlow;
+import com.fmanda.autopartdashboard.model.ModelInventory;
 import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
 import com.fmanda.autopartdashboard.model.ModelSalesPeriod;
@@ -284,6 +285,41 @@ public class ControllerRest {
             for (ModelAPAging aging : agings) {
                 aging.setId(0);
                 aging.saveToDB(db.getWritableDatabase());
+            }
+        }catch(Exception e){
+            log(e.toString());
+        }
+    }
+
+    public boolean DownloadInventory(){
+        String url = base_url() + "inventory";
+
+        GsonRequest<ModelInventory[]> gsonReq = new GsonRequest<>(url, ModelInventory[].class,
+                new Response.Listener<ModelInventory[]>() {
+                    @Override
+                    public void onResponse(ModelInventory[] response) {
+                        SaveInventory(response);
+                        listener.onSuccess("");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error.toString());
+                    }
+                }
+        );
+        this.controllerRequest.addToRequestQueue(gsonReq, url_project());
+        return true;
+    }
+
+    private void SaveInventory(ModelInventory[] inventories){
+        try {
+            db.getWritableDatabase().execSQL(new ModelInventory().generateSQLDelete("")); //always delete all record projects
+
+            for (ModelInventory inventory : inventories) {
+                inventory.setId(0);
+                inventory.saveToDB(db.getWritableDatabase());
             }
         }catch(Exception e){
             log(e.toString());

@@ -31,5 +31,6 @@ require '../src/routes/project.php';
 require '../src/routes/salesperiod.php';
 require '../src/routes/cashflow.php';
 require '../src/routes/apaging.php';
+require '../src/routes/inventory.php';
 
 $app->run();
