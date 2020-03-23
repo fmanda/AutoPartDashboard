@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.fmanda.autopartdashboard.controller.ControllerProject;
+import com.fmanda.autopartdashboard.controller.ControllerRest;
 import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        temporaryResetDB();
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 //        FloatingActionButton fab = findViewById(R.id.fab);
@@ -53,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
 //        navController.navigate(R.id.nav_inventory);
 //        setBackgroundColor(this.getColor(R.color.colorBackground));
+        if (isProjectEmpty()){
+//            DownloadProjectOnce();
+            navController.navigate(R.id.nav_setting);
+        }
     }
 
     @Override
@@ -74,5 +81,34 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.resetDatabase(dbHelper.getWritableDatabase());
         Toast.makeText(this, "Database Reset done", Toast.LENGTH_SHORT).show();
 
+    }
+
+    private void DownloadProjectOnce(){
+        try {
+            ControllerRest cr = new ControllerRest(this);
+            cr.setListener(new ControllerRest.Listener() {
+                @Override
+                public void onSuccess(String msg) {
+                    Toast.makeText(MainActivity.this, "Project Updated", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(String msg) {
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onProgress(String msg) {
+
+                }
+            });
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isProjectEmpty(){
+        ControllerProject cp = new ControllerProject(this);
+        return (cp.getProjects().size() == 0);
     }
 }

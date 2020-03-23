@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="@string/caption_simpan" />
+            android:text="Update" />
 
         <Button
             android:id="@+id/btnReset"

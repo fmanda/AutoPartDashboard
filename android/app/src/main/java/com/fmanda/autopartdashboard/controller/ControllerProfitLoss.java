@@ -34,7 +34,7 @@ public class ControllerProfitLoss {
             if (projectcode != "" && projectcode != "0") {
                 sql += " and projectcode = '" + projectcode + "'";
             }
-            sql += " group by reportidx, reportname, reportgroup, groupname ";
+            sql += " group by reportname, reportgroup, groupname order by reportidx";
 
             Cursor cursor = rdb.rawQuery(sql, null);
             while (cursor.moveToNext()) {
