@@ -16,6 +16,7 @@ import com.fmanda.autopartdashboard.model.ModelInventory;
 import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
 import com.fmanda.autopartdashboard.model.ModelSalesPeriod;
+import com.fmanda.autopartdashboard.model.ModelUsers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -83,7 +84,7 @@ public class ControllerRest {
         this.db = DBHelper.getInstance(context);
         this.controllerRequest = ControllerRequest.getInstance(context);
         this.controllerSetting = new ControllerSetting((this.context));
-        this.user_id = controllerSetting.getUserID();
+//        this.user_id = controllerSetting.getUserID();
 
 //        this.base_url = "http://" + controllerSetting.getSettingStr("rest_url") + "/";
     }
@@ -102,6 +103,10 @@ public class ControllerRest {
 
     public String url_cashflow(){
         return base_url() + "cashflow";
+    }
+
+    public String url_getUser(){
+        return base_url() + "user";
     }
 
     public String url_currentsales(){
@@ -360,6 +365,7 @@ public class ControllerRest {
             log(e.toString());
         }
     }
+
     public boolean DownloadCashFlow(final int monthperiod, final int yearperiod){
         String url = url_cashflow() + "/" + String.valueOf(yearperiod) + "/" + String.valueOf(monthperiod);
         GsonRequest<ModelCashFlow[]> gsonReq = new GsonRequest<>(url, ModelCashFlow[].class,
@@ -380,6 +386,7 @@ public class ControllerRest {
         this.controllerRequest.addToRequestQueue(gsonReq, url);
         return true;
     }
+
 
     public boolean DownloadCurrentSales(){
         try{

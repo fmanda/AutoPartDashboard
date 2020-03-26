@@ -1,0 +1,52 @@
+CREATE PROCEDURE [dbo].[SP_POST_ARAGING]
+AS 
+BEGIN
+	DECLARE @BASEURL VARCHAR(100) = (SELECT DISTINCT VARVALUE FROM TVARIABLE WHERE VARNAME = 'REST_URL')	
+	DECLARE @PROJECTCODE VARCHAR(100) = (SELECT DISTINCT VARVALUE FROM TVARIABLE WHERE VARNAME = 'KODE_CABANG')
+	DECLARE @URL VARCHAR(300);
+	DECLARE @status int
+	DECLARE @req AS INT;
+	DECLARE @ResponseText as table(responseText nvarchar(max))
+	declare @msg varchar(max) 
+
+
+	DECLARE @Body AS VARCHAR(MAX) = 
+		(
+			SELECT @PROJECTCODE as projectcode, sum([current]) as [current], 
+			sum(range1) as range1, 
+			sum(range2) as range2, 
+			sum(range3) as range3,
+			sum(range4) as range4,
+			sum(remain) as total
+			FROM FN_AR_AGING(getdate())
+			FOR JSON PATH
+		)
+
+
+	EXEC sp_OACreate 'MSXML2.XMLHTTP', @req OUT;
+
+	-- post after
+	SET @URL = @BASEURL + 'araging/'+ @PROJECTCODE; 
+	EXEC sp_OAMethod @req, 'open', NULL, 'post', @URL, 'false'
+	EXEC sp_OAMethod @req, 'setRequestHeader', null, 'Content-Type', 'application/json'
+	EXEC sp_OAMethod @req, 'send', null, @body
+	EXEC sp_OAGetProperty @req, 'status', @status OUT
+
+	if (@status <> 200) 
+	begin
+		INSERT INTO @ResponseText (ResponseText) EXEC sp_OAGetProperty @req, 'responseText'
+		set @msg  = @URL + ' => Error Code ' +  cast(@status as varchar(10))
+			 + CHAR(10) + (select distinct isnull(responsetext,'') from @ResponseText);
+		THROW 51000, @msg, 1;  
+	end
+
+	INSERT INTO @ResponseText VALUES(@URL + ' <OK>');
+	INSERT INTO trestlog(responsetext) select responsetext from @ResponseText;
+
+	EXEC sp_OADestroy @req
+
+
+END;
+GO
+
+

@@ -27,9 +27,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        temporaryResetDB();
         setContentView(R.layout.activity_main);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 //        FloatingActionButton fab = findViewById(R.id.fab);
@@ -50,14 +48,12 @@ public class MainActivity extends AppCompatActivity {
         ).setDrawerLayout(drawer).build();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//        NavController navController = Navigation.findNavController(this, R.id.nav_profitLoss);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
 //        navController.navigate(R.id.nav_inventory);
 //        setBackgroundColor(this.getColor(R.color.colorBackground));
         if (isProjectEmpty()){
-//            DownloadProjectOnce();
             navController.navigate(R.id.nav_setting);
         }
     }
@@ -76,36 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    private void temporaryResetDB(){
-        DBHelper dbHelper = DBHelper.getInstance(this);
-        dbHelper.resetDatabase(dbHelper.getWritableDatabase());
-        Toast.makeText(this, "Database Reset done", Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void DownloadProjectOnce(){
-        try {
-            ControllerRest cr = new ControllerRest(this);
-            cr.setListener(new ControllerRest.Listener() {
-                @Override
-                public void onSuccess(String msg) {
-                    Toast.makeText(MainActivity.this, "Project Updated", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onError(String msg) {
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onProgress(String msg) {
-
-                }
-            });
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
 
     private boolean isProjectEmpty(){
         ControllerProject cp = new ControllerProject(this);

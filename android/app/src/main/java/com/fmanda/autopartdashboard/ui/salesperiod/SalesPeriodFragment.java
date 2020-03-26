@@ -12,6 +12,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,11 +29,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.fmanda.autopartdashboard.MainActivity;
 import com.fmanda.autopartdashboard.R;
 import com.fmanda.autopartdashboard.adapter.SalesPeriodAdapter;
 import com.fmanda.autopartdashboard.controller.ControllerProject;
 import com.fmanda.autopartdashboard.controller.ControllerRest;
 import com.fmanda.autopartdashboard.controller.ControllerSalesPeriod;
+import com.fmanda.autopartdashboard.controller.ControllerSetting;
 import com.fmanda.autopartdashboard.model.ModelProject;
 import com.fmanda.autopartdashboard.model.ModelSalesPeriod;
 import com.github.mikephil.charting.charts.BarChart;
@@ -52,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class SalesPeriodFragment extends Fragment {
 
@@ -80,9 +85,14 @@ public class SalesPeriodFragment extends Fragment {
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        if (!chekLogin()) {
+            return null;
+        }
         setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(SalesPeriodViewModel.class);
         View root = inflater.inflate(R.layout.fragment_salesperiod, container, false);
@@ -282,6 +292,18 @@ public class SalesPeriodFragment extends Fragment {
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         }
         lnParam.setLayoutParams(params);
+    }
+
+    private boolean chekLogin(){
+        final NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        ControllerSetting cs = ControllerSetting.getInstance(getContext());
+        if (cs.isLogin == false){
+            navController.navigate(R.id.nav_setting);
+            return false;
+        }else{
+            return true;
+        }
+
     }
 
 }

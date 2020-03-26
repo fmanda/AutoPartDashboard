@@ -17,11 +17,20 @@ import java.util.List;
 
 public class ControllerSetting {
     private Context context;
+    public boolean isLogin = false;
 
     public ControllerSetting(Context context) {
         this.context = context;
     }
 
+    private static ControllerSetting mInstance;
+
+    public static synchronized ControllerSetting getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new ControllerSetting(context.getApplicationContext());
+        }
+        return mInstance;
+    }
 
     public List<ModelSetting> getSettings(){
         try {
@@ -61,43 +70,6 @@ public class ControllerSetting {
         }
     }
 
-    public Integer getUserID(){
-        ModelSetting setting = getSetting("user_id");
-        if (setting == null) return 0;
-
-        if (setting.getVarvalue() != "")  {
-            return Integer.parseInt(setting.getVarvalue());
-        }else{
-            return 0;
-        }
-    }
-
-    public Integer getAreaID(){
-        ModelSetting setting = getSetting("area_id");
-        if (setting.getVarvalue() != "")  {
-            return Integer.parseInt(setting.getVarvalue());
-        }else{
-            return 0;
-        }
-    }
-
-    public String getUserName(){
-        ModelSetting setting = getSetting( "user_name");
-        if (setting.getVarvalue() != "")  {
-            return setting.getVarvalue();
-        }else{
-            return "";
-        }
-    }
-
-    public String getArea(){
-        ModelSetting setting = getSetting( "area");
-        if (setting.getVarvalue() != "")  {
-            return setting.getVarvalue();
-        }else{
-            return "Unknown Company";
-        }
-    }
 
 
     public ModelSetting getSetting(String varname){

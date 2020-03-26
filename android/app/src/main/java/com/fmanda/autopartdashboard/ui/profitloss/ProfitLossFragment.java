@@ -11,6 +11,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +38,7 @@ import com.fmanda.autopartdashboard.controller.ControllerProfitLoss;
 import com.fmanda.autopartdashboard.controller.ControllerProject;
 import com.fmanda.autopartdashboard.controller.ControllerRequest;
 import com.fmanda.autopartdashboard.controller.ControllerRest;
+import com.fmanda.autopartdashboard.controller.ControllerSetting;
 import com.fmanda.autopartdashboard.model.ModelProfitLoss;
 import com.fmanda.autopartdashboard.model.ModelProject;
 
@@ -66,6 +69,9 @@ public class ProfitLossFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        if (!chekLogin()) {
+            return null;
+        }
         setHasOptionsMenu(true);
         mViewModel = new ViewModelProvider(this).get(ProfitLossViewModel.class);
         View root = inflater.inflate(R.layout.fragment_profitloss, container, false);
@@ -277,6 +283,22 @@ public class ProfitLossFragment extends Fragment {
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         }
         lnParam.setLayoutParams(params);
+    }
+
+    private boolean chekLogin(){
+        try {
+            final NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+            ControllerSetting cs = ControllerSetting.getInstance(getContext());
+            if (cs.isLogin == false) {
+                navController.navigate(R.id.nav_setting);
+                return false;
+            } else {
+                return true;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

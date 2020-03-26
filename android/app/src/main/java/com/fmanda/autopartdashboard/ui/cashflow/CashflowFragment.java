@@ -10,6 +10,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +31,7 @@ import com.fmanda.autopartdashboard.controller.ControllerAPAging;
 import com.fmanda.autopartdashboard.controller.ControllerCashFlow;
 import com.fmanda.autopartdashboard.controller.ControllerProject;
 import com.fmanda.autopartdashboard.controller.ControllerRest;
+import com.fmanda.autopartdashboard.controller.ControllerSetting;
 import com.fmanda.autopartdashboard.helper.CurrencyHelper;
 import com.fmanda.autopartdashboard.model.ModelAPAging;
 import com.fmanda.autopartdashboard.model.ModelCashFlow;
@@ -69,6 +72,9 @@ public class CashflowFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        if (!chekLogin()) {
+            return null;
+        }
         mViewModel = new ViewModelProvider(this).get(CashflowViewModel.class);
         View root = inflater.inflate(R.layout.fragment_cashflow, container, false);
         setHasOptionsMenu(true);
@@ -280,6 +286,22 @@ public class CashflowFragment extends Fragment {
         chart.setDescription(null);
         chart.getLegend().setEnabled(false);   // Hide the legend
         chart.animateXY(1000, 1000);
+    }
+
+    private boolean chekLogin(){
+        try {
+            final NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+            ControllerSetting cs = ControllerSetting.getInstance(getContext());
+            if (cs.isLogin == false) {
+                navController.navigate(R.id.nav_setting);
+                return false;
+            } else {
+                return true;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

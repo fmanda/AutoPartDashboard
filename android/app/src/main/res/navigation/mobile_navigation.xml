@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/nav_setting"
         android:name="com.fmanda.autopartdashboard.ui.setting.SettingFragment"
-        android:label="Setting App"
+        android:label="Setting &amp; Login"
         tools:layout="@layout/fragment_setting" />
     <fragment
         android:id="@+id/nav_sales"

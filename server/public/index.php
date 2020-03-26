@@ -33,5 +33,7 @@ require '../src/routes/cashflow.php';
 require '../src/routes/apaging.php';
 require '../src/routes/inventory.php';
 require '../src/routes/dashboard.php';
+require '../src/routes/araging.php';
+require '../src/routes/user.php';
 
 $app->run();
