@@ -26,7 +26,9 @@ import com.fmanda.autopartdashboard.controller.ControllerSetting;
 import com.fmanda.autopartdashboard.helper.CurrencyHelper;
 import com.fmanda.autopartdashboard.model.BaseModel;
 import com.fmanda.autopartdashboard.model.ModelAPAging;
+import com.fmanda.autopartdashboard.model.ModelARAging;
 import com.fmanda.autopartdashboard.model.ModelCashFlow;
+import com.fmanda.autopartdashboard.model.ModelCurrentCashFlow;
 import com.fmanda.autopartdashboard.model.ModelCurrentSales;
 import com.fmanda.autopartdashboard.model.ModelInventory;
 import com.fmanda.autopartdashboard.model.ModelProject;
@@ -52,6 +54,9 @@ public class HomeFragment extends Fragment {
     PieChart chartYTD;
     TextView txtInventory;
     TextView txtAP;
+    TextView txtAR;
+    TextView txtIncome;
+    TextView txtExpense;
     List<ModelProject> projects = new ArrayList<>();
 
 
@@ -75,10 +80,15 @@ public class HomeFragment extends Fragment {
             chartYTD = root.findViewById(R.id.chartYTD);
             txtInventory = root.findViewById(R.id.txtInventory);
             txtAP = root.findViewById(R.id.txtAP);
+            txtAR = root.findViewById(R.id.txtAR);
+            txtIncome = root.findViewById(R.id.txtIncome);
+            txtExpense = root.findViewById(R.id.txtExpense);
             projects = new ControllerProject(getContext()).getProjects();
             loadSales();
             loadAP();
             loadInventory();
+            loadAR();
+            loadCashFlow();
 
         }catch (Exception e){
             e.printStackTrace();
@@ -105,6 +115,34 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
+    private void loadCashFlow() {
+        try {
+            ControllerRest cr = new ControllerRest(this.getContext());
+            cr.setObjectListener(new ControllerRest.ObjectListener() {
+                @Override
+                public void onSuccess(BaseModel[] obj) {
+                    ModelCurrentCashFlow[] currentCashFlows = (ModelCurrentCashFlow[]) obj;
+                    double income = 0;
+                    double expense = 0;
+                    for (ModelCurrentCashFlow cashFlow : currentCashFlows){
+                        income += cashFlow.income;
+                        expense += cashFlow.expense;
+                    }
+                    txtIncome.setText(CurrencyHelper.format(income));
+                    txtExpense.setText(CurrencyHelper.format(expense));
+                }
+                @Override
+                public void onError(String msg) {
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+            cr.DownloadCurrentCashFlow();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     private void loadInventory() {
         try {
@@ -159,6 +197,30 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    private void loadAR() {
+        try {
+            ControllerRest cr = new ControllerRest(this.getContext());
+            cr.setObjectListener(new ControllerRest.ObjectListener() {
+                @Override
+                public void onSuccess(BaseModel[] obj) {
+                    ModelARAging[] agings = (ModelARAging[]) obj;
+                    double total = 0;
+                    for (ModelARAging aging : agings){
+                        total += aging.getTotal();
+                    }
+                    txtAR.setText(CurrencyHelper.format(total));
+                }
+                @Override
+                public void onError(String msg) {
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+            cr.DownloadCurrentARAging();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     private void processSales(BaseModel[] response){
         try {
@@ -199,6 +261,7 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
 
     private void Animate(View itemView, int i) {
         itemView.setTranslationX(itemView.getX() + 400);

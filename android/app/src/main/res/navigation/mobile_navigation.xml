@@ -53,7 +53,7 @@
     <fragment
         android:id="@+id/nav_apaging"
         android:name="com.fmanda.autopartdashboard.ui.apaging.APagingFragment"
-        android:label="Saldo Hutang"
+        android:label="Saldo Hutang (AP)"
         tools:layout="@layout/fragment_apaging" />
     <fragment
         android:id="@+id/nav_cashflow"
@@ -65,4 +65,9 @@
         android:name="com.fmanda.autopartdashboard.ui.inventory.InventoryFragment"
         android:label="Inventory Movement"
         tools:layout="@layout/fragment_inventory" />
+    <fragment
+        android:id="@+id/nav_araging"
+        android:name="com.fmanda.autopartdashboard.ui.araging.ARagingFragment"
+        android:label="Saldo Piutang (AR)"
+        tools:layout="@layout/fragment_araging" />
 </navigation>

@@ -25,10 +25,10 @@
             android:id="@+id/nav_apaging"
             android:icon="@drawable/ic_menu_apaging"
             android:title="@string/menu_apaging" />
-<!--        <item-->
-<!--            android:id="@+id/nav_araging"-->
-<!--            android:icon="@drawable/ic_menu_rice"-->
-<!--            android:title="@string/menu_araging" />-->
+        <item
+            android:id="@+id/nav_araging"
+            android:icon="@drawable/ic_menu_account"
+            android:title="@string/menu_araging" />
         <item
             android:id="@+id/nav_inventory"
             android:icon="@drawable/ic_menu_stock"

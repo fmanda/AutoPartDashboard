@@ -10,7 +10,9 @@ import com.fmanda.autopartdashboard.helper.DBHelper;
 import com.fmanda.autopartdashboard.helper.GsonRequest;
 import com.fmanda.autopartdashboard.model.BaseModel;
 import com.fmanda.autopartdashboard.model.ModelAPAging;
+import com.fmanda.autopartdashboard.model.ModelARAging;
 import com.fmanda.autopartdashboard.model.ModelCashFlow;
+import com.fmanda.autopartdashboard.model.ModelCurrentCashFlow;
 import com.fmanda.autopartdashboard.model.ModelCurrentSales;
 import com.fmanda.autopartdashboard.model.ModelInventory;
 import com.fmanda.autopartdashboard.model.ModelProfitLoss;
@@ -113,6 +115,9 @@ public class ControllerRest {
         return base_url() + "currentsales";
     }
 
+    public String url_currentcashflow(){
+        return base_url() + "currentcashflow";
+    }
 
     public String url_salesperiod(){
         return base_url() + "salesperiod";
@@ -424,6 +429,42 @@ public class ControllerRest {
     }
 
 
+    public boolean DownloadCurrentCashFlow(){
+        try{
+            String url = url_currentcashflow();
+
+            GsonRequest<ModelCurrentCashFlow[]> gsonReq = new GsonRequest<>(url, ModelCurrentCashFlow[].class,
+                    new Response.Listener<ModelCurrentCashFlow[]>() {
+                        @Override
+                        public void onResponse(ModelCurrentCashFlow[] response) {
+                            if (objectListener != null){
+                                objectListener.onSuccess(response);
+                            }
+                            if (listener != null) {
+                                listener.onSuccess("");
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (objectListener != null){
+                                objectListener.onError(error.toString());
+                            }
+                            if (listener != null) {
+                                listener.onError("");
+                            }
+                        }
+                    });
+
+            this.controllerRequest.addToRequestQueue(gsonReq, url);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+
     public boolean DownloadCurrentInventory(){
         try {
             String url = base_url() + "inventory";
@@ -493,6 +534,45 @@ public class ControllerRest {
         }
         return true;
     }
+
+
+    public boolean DownloadCurrentARAging(){
+        try {
+            String url = base_url() + "araging";
+
+            GsonRequest<ModelARAging[]> gsonReq = new GsonRequest<>(url, ModelARAging[].class,
+                    new Response.Listener<ModelARAging[]>() {
+                        @Override
+                        public void onResponse(ModelARAging[] response) {
+                            if (objectListener != null){
+                                objectListener.onSuccess(response);
+                            }
+                            if (listener != null) {
+                                listener.onSuccess("");
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (objectListener != null){
+                                objectListener.onError(error.toString());
+                            }
+                            if (listener != null) {
+                                listener.onError(error.toString());
+                            }
+                        }
+                    }
+            );
+            this.controllerRequest.addToRequestQueue(gsonReq, url);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+
+
 
 
     public void SyncData( final Boolean async){
