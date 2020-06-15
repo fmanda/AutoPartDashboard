@@ -34,6 +34,24 @@ $app->get('/profitloss/{yearperiod}/{monthperiod}', function ($request, $respons
 	}
 });
 
+$app->get('/netprofit/{startparam}/{endparamm}', function ($request, $response, $args) {
+	try{
+    $startparam = $args['startparam'];
+		$endparam = $args['endparamm'];
+		$sql = "select sum(reportval) as netprofit from profitloss where reportidx = 501 and  concat(yearperiod, '.', right(concat('0',monthperiod),2)) between '".$startparam."' and '".$endparam."'" ;
+    $data = DB::openQuery($sql);
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
 $app->post('/profitloss/{projectcode}/{yearperiod}/{monthperiod}', function ($request, $response) {
 	$json = $request->getBody();
   $projectcode = $request->getAttribute('projectcode');
